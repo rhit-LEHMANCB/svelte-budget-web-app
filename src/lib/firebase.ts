@@ -1,21 +1,34 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore"
-import { getAuth, onAuthStateChanged, type User } from "firebase/auth"
-import { getStorage } from "firebase/storage"
-import { writable } from "svelte/store";
+import { getApps, initializeApp, type FirebaseApp } from "firebase/app";
+import { getAuth, inMemoryPersistence, setPersistence } from "firebase/auth"
+import { PUBLIC_FB_API_KEY, PUBLIC_FB_APP_ID, PUBLIC_FB_AUTH_DOMAIN, PUBLIC_FB_MEASUREMENT_ID, PUBLIC_FB_MESSAGING_SENDER_ID, PUBLIC_FB_PROJECT_ID, PUBLIC_FB_STORAGE_BUCKET } from "$env/static/public";
 
 // Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyBa_QYbyX6g4XnFisFDyqHsgDGCsRKshCE",
-  authDomain: "lehman-realty.firebaseapp.com",
-  projectId: "lehman-realty",
-  storageBucket: "lehman-realty.appspot.com",
-  messagingSenderId: "937362912362",
-  appId: "1:937362912362:web:680cfdf7498d8321204613",
-  measurementId: "G-4JJL31VJCE"
+export const firebaseConfig = {
+  apiKey: PUBLIC_FB_API_KEY,
+  authDomain: PUBLIC_FB_AUTH_DOMAIN,
+  projectId: PUBLIC_FB_PROJECT_ID,
+  storageBucket: PUBLIC_FB_STORAGE_BUCKET,
+  messagingSenderId: PUBLIC_FB_MESSAGING_SENDER_ID,
+  appId: PUBLIC_FB_APP_ID,
+  measurementId: PUBLIC_FB_MEASUREMENT_ID
 };
 
-// Initialize Firebase
-export const app = initializeApp(firebaseConfig);
-export const auth = getAuth();
+function makeApp() {
+  const apps = getApps();
+  if (apps.length > 0) {
+    return apps[0]!;
+  }
+
+  return initializeApp(firebaseConfig);
+}
+
+function makeAuth(app: FirebaseApp) {
+  const auth = getAuth(app);
+  setPersistence(auth, inMemoryPersistence);
+  return auth;
+}
+
+const app = makeApp();
+export const auth = makeAuth(app);
+

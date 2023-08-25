@@ -1,11 +1,13 @@
 <script lang="ts">
-	import { auth } from '$lib/firebase';
-	import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+	import { getAuth, inMemoryPersistence, setPersistence, signInWithEmailAndPassword } from 'firebase/auth';
 	import type { PageData } from './$types';
 	import { goto } from '$app/navigation';
-	import { IconExclamationCircle, IconInfoCircle } from '@tabler/icons-svelte';
+	import { IconExclamationCircle } from '@tabler/icons-svelte';
+	import { auth, firebaseConfig } from '$lib/firebase';
+	import { getApps, initializeApp, type FirebaseApp } from 'firebase/app';
 
 	export let data: PageData;
+	export const prerender = false;
 
 	let email: string;
 	let password: string;
@@ -32,12 +34,13 @@
 	}
 </script>
 
-<div class="h-screen flex items-center justify-center bg-gradient-to-br variant-gradient-primary-secondary">
+<div
+	class="h-screen flex items-center justify-center bg-gradient-to-br variant-gradient-primary-secondary"
+>
 	<div class="card p-8">
 		<header class="pb-4">
 			<strong>Lehman Properties</strong>
-                <p>Please sign in to continue.</p>
-			
+			<p>Please sign in to continue.</p>
 		</header>
 		<div class="grid grid-cols-1 gap-4">
 			<label class="label"
