@@ -4,13 +4,13 @@ import { redirect, type Handle } from '@sveltejs/kit';
 export const handle = (async ({ event, resolve }) => {
 	const sessionCookie = event.cookies.get('__session');
 
-    event.locals.userID = null;
+	event.locals.userID = null;
 
-	if (event.url.pathname.startsWith('/manager')) {
-		try {
-			const decodedClaims = await adminAuth.verifySessionCookie(sessionCookie!);
-			event.locals.userID = decodedClaims.uid;
-		} catch (e) {
+	try {
+		const decodedClaims = await adminAuth.verifySessionCookie(sessionCookie!);
+		event.locals.userID = decodedClaims.uid;
+	} catch (e) {
+		if (event.url.pathname.startsWith('/manager')) {
 			throw redirect(303, '/signin');
 		}
 	}

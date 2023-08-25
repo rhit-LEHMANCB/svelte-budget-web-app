@@ -1,6 +1,6 @@
 <script lang="ts">
     // Your selected Skeleton theme:
-	import '../theme.postcss'
+	import '../theme.postcss';
 
     // This contains the bulk of Skeletons required styles:
     import '@skeletonlabs/skeleton/styles/skeleton.css';

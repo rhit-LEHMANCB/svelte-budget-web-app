@@ -11,4 +11,7 @@ declare global {
 	}
 }
 
-export {};
+export interface DocumentWithId {
+	id: string;
+	data: FirebaseFirestore.DocumentData;
+}
