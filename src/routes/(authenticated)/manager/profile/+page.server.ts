@@ -1,6 +1,6 @@
 import { fail } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import {superValidate} from 'sveltekit-superforms/server'
+import {message, superValidate} from 'sveltekit-superforms/server'
 import validator from 'validator';
 import { z } from 'zod';
 import { adminDB } from '$lib/server/admin';
@@ -21,10 +21,10 @@ export const actions = {
         const form = await superValidate(event, profileSchema);
         
         if (!form.valid) {
-            return fail(400, {form});
+            return message(form, 'Invalid form');
         } 
 
         await adminDB.collection('users').doc(event.locals.userID!).update(form.data);
-        return form;
+        return message(form, 'Form submitted');
     }
 }
