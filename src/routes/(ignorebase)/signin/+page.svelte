@@ -32,6 +32,14 @@
 			.then(() => goto('/manager'))
 			.catch((error) => (loginError = error.code));
 	}
+
+	function onKeyDown(e: KeyboardEvent) {
+		 switch(e.code) {
+			 case 'Enter':
+				 handleSignIn();
+				 break;
+		 }
+	}
 </script>
 
 <div
@@ -73,3 +81,5 @@
 		</div>
 	</div>
 </div>
+
+<svelte:window on:keydown={onKeyDown} />
