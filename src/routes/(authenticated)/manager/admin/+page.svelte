@@ -21,16 +21,16 @@
 		</Tab>
 		<Tab bind:group={$tabSet} name="users" value={1}
 			><div class="flex gap-2">
-                <IconUsers/>
-                <span>Users</span>
-            </div></Tab
+				<IconUsers />
+				<span>Users</span>
+			</div></Tab
 		>
 		<!-- Tab Panels --->
 		<svelte:fragment slot="panel">
 			{#if $tabSet === 0}
 				(tab panel 1 contents)
 			{:else if $tabSet === 1}
-				<UsersTab users={data.users}/>
+				<UsersTab users={data.users} />
 			{/if}
 		</svelte:fragment>
 	</TabGroup>

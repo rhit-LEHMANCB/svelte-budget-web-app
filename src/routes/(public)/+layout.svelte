@@ -7,7 +7,6 @@
 		type DrawerSettings
 	} from '@skeletonlabs/skeleton';
 	import Navigation from '$lib/Navigation/Navigation.svelte';
-	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 
 	const drawerSettings: DrawerSettings = {
@@ -25,7 +24,7 @@
 </script>
 
 <Drawer>
-	<Navigation />
+	<Navigation isAdmin={false} />
 </Drawer>
 
 <AppShell slotSidebarLeft="bg-surface-500/5 w-0 lg:w-64">
@@ -51,7 +50,7 @@
 		</AppBar>
 	</svelte:fragment>
 	<svelte:fragment slot="sidebarLeft">
-		<Navigation />
+		<Navigation isAdmin={false} />
 	</svelte:fragment>
 	<!-- (pageHeader) -->
 	<!-- Router Slot -->

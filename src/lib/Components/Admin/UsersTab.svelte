@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Paginator, toastStore, type ToastSettings } from '@skeletonlabs/skeleton';
+	import { Paginator } from '@skeletonlabs/skeleton';
 	import { IconUserMinus, IconUserPlus } from '@tabler/icons-svelte';
 	import { modalStore, type ModalSettings } from '@skeletonlabs/skeleton';
 	import { emailSchema } from '$lib/schemas';
@@ -19,14 +19,14 @@
 	};
 
 	$: paginatedUsers = users.slice(
-		page.offset * page.limit,             // start
+		page.offset * page.limit, // start
 		page.offset * page.limit + page.limit // end
 	);
 
 	async function handleResponse(response: string) {
 		try {
 			emailSchema.parse(response);
-			const res = await fetch('/api/user/add', {
+			await fetch('/api/user/add', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -78,7 +78,7 @@
 	}
 
 	async function removeUser(id: string) {
-		const res = await fetch(`/api/user/${id}`, {
+		await fetch(`/api/user/${id}`, {
 			method: 'DELETE'
 		})
 			.then(() => {

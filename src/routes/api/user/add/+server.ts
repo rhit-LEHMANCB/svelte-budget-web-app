@@ -3,7 +3,11 @@ import type { RequestHandler } from './$types';
 import { adminAuth, adminDB } from '$lib/server/admin';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
-	const userData = (await adminDB.collection('users').doc(locals.userID!).get()).data();
+	if (!locals.userID) {
+		throw error(401, 'You must be logged in to do this.');
+	}
+
+	const userData = (await adminDB.collection('users').doc(locals.userID).get()).data();
 
 	if (!userData || !userData.permissions || userData.permissions !== 'admin') {
 		throw error(401, 'You must be an admin to do this.');
@@ -11,7 +15,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 	const { email } = await request.json();
 
-	const newUserDoc = { email: email, firstName: 'New', lastName: 'User', phoneNumber: '', permissions: 'user' };
+	const newUserDoc = {
+		email: email,
+		firstName: 'New',
+		lastName: 'User',
+		phoneNumber: '',
+		permissions: 'user'
+	};
 
 	await adminAuth
 		.createUser({ email: email })
@@ -22,5 +32,5 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			throw error(500, error);
 		});
 
-    return json({status: 'New User Created'});
+	return json({ status: 'New User Created' });
 };
