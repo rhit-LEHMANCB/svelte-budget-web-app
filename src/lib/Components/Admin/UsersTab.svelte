@@ -19,7 +19,7 @@
 	};
 
 	$: paginatedUsers = users.slice(
-		page.offset * page.limit,             // start
+		page.offset * page.limit, // start
 		page.offset * page.limit + page.limit // end
 	);
 

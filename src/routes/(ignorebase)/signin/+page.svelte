@@ -1,5 +1,10 @@
 <script lang="ts">
-	import { getAuth, inMemoryPersistence, setPersistence, signInWithEmailAndPassword } from 'firebase/auth';
+	import {
+		getAuth,
+		inMemoryPersistence,
+		setPersistence,
+		signInWithEmailAndPassword
+	} from 'firebase/auth';
 	import type { PageData } from './$types';
 	import { goto } from '$app/navigation';
 	import { IconExclamationCircle } from '@tabler/icons-svelte';
@@ -34,11 +39,11 @@
 	}
 
 	function onKeyDown(e: KeyboardEvent) {
-		 switch(e.code) {
-			 case 'Enter':
-				 handleSignIn();
-				 break;
-		 }
+		switch (e.code) {
+			case 'Enter':
+				handleSignIn();
+				break;
+		}
 	}
 </script>
 

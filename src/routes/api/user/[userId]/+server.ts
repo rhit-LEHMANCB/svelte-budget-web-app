@@ -9,13 +9,14 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 		throw error(401, 'You must be an admin to do this.');
 	}
 
-	await adminAuth.deleteUser(params.userId)
+	await adminAuth
+		.deleteUser(params.userId)
 		.then(() => {
 			adminDB.collection('users').doc(params.userId).delete();
 		})
 		.catch((err) => {
-            console.log(err.message);
+			console.log(err.message);
 			throw error(500, err);
 		});
-    return json({status: 'User Deleted'});
+	return json({ status: 'User Deleted' });
 };

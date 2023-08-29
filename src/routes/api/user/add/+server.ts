@@ -11,7 +11,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 	const { email } = await request.json();
 
-	const newUserDoc = { email: email, firstName: 'New', lastName: 'User', phoneNumber: '', permissions: 'user' };
+	const newUserDoc = {
+		email: email,
+		firstName: 'New',
+		lastName: 'User',
+		phoneNumber: '',
+		permissions: 'user'
+	};
 
 	await adminAuth
 		.createUser({ email: email })
@@ -22,5 +28,5 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			throw error(500, error);
 		});
 
-    return json({status: 'New User Created'});
+	return json({ status: 'New User Created' });
 };
