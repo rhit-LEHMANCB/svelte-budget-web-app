@@ -1,18 +1,8 @@
 <script lang="ts">
-	import {
-		getAuth,
-		inMemoryPersistence,
-		setPersistence,
-		signInWithEmailAndPassword
-	} from 'firebase/auth';
-	import type { PageData } from './$types';
+	import { signInWithEmailAndPassword } from 'firebase/auth';
 	import { goto } from '$app/navigation';
 	import { IconExclamationCircle } from '@tabler/icons-svelte';
-	import { auth, firebaseConfig } from '$lib/firebase';
-	import { getApps, initializeApp, type FirebaseApp } from 'firebase/app';
-
-	export let data: PageData;
-	export const prerender = false;
+	import { auth } from '$lib/firebase';
 
 	let email: string;
 	let password: string;
@@ -23,7 +13,7 @@
 
 		const idToken = await credential.user.getIdToken();
 
-		const res = await fetch('/api/signin', {
+		await fetch('/api/signin', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'

@@ -12,10 +12,8 @@ try {
 			privateKey: FB_PRIVATE_KEY
 		})
 	});
-} catch (err: any) {
-	if (!/already exists/u.test(err.message)) {
-		console.error('Firebase Admin Error: ', err.stack);
-	}
+} catch (err) {
+	console.error('Firebase Admin Error: ', err);
 }
 
 export const adminDB = getFirestore();

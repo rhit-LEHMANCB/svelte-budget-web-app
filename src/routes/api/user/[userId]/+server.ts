@@ -3,7 +3,11 @@ import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 export const DELETE: RequestHandler = async ({ params, locals }) => {
-	const userData = (await adminDB.collection('users').doc(locals.userID!).get()).data();
+	if (!locals.userID) {
+		throw error(401, 'You must be logged in to do this.');
+	}
+
+	const userData = (await adminDB.collection('users').doc(locals.userID).get()).data();
 
 	if (!userData || !userData.permissions || userData.permissions !== 'admin') {
 		throw error(401, 'You must be an admin to do this.');

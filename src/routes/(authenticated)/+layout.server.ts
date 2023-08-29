@@ -5,7 +5,11 @@ import type { LayoutServerLoad } from './$types';
 export const load = (async ({ locals }) => {
 	const uid = locals.userID;
 
-	const userData = (await adminDB.collection('users').doc(uid!).get()).data();
+	if (!uid) {
+		throw error(500, 'Failed to find user info.');
+	}
+
+	const userData = (await adminDB.collection('users').doc(uid).get()).data();
 
 	if (!userData) {
 		throw error(500, 'Failed to find user info.');

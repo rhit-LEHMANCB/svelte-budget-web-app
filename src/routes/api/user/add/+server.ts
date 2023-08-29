@@ -3,7 +3,11 @@ import type { RequestHandler } from './$types';
 import { adminAuth, adminDB } from '$lib/server/admin';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
-	const userData = (await adminDB.collection('users').doc(locals.userID!).get()).data();
+	if (!locals.userID) {
+		throw error(401, 'You must be logged in to do this.');
+	}
+
+	const userData = (await adminDB.collection('users').doc(locals.userID).get()).data();
 
 	if (!userData || !userData.permissions || userData.permissions !== 'admin') {
 		throw error(401, 'You must be an admin to do this.');

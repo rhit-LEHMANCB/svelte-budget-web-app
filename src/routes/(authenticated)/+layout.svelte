@@ -5,14 +5,11 @@
 		Drawer,
 		drawerStore,
 		type DrawerSettings,
-		LightSwitch,
-		Avatar,
 		Modal,
 		Toast
 	} from '@skeletonlabs/skeleton';
 	import Navigation from '$lib/Navigation/Navigation.svelte';
 	import { page } from '$app/stores';
-	import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 	import { goto } from '$app/navigation';
 	import type { LayoutData } from './$types';
 	import { IconLogout } from '@tabler/icons-svelte';
@@ -30,12 +27,8 @@
 		drawerStore.open(drawerSettings);
 	}
 
-	function goToSignInPage(): void {
-		goto('/signin');
-	}
-
 	async function signOutSSR() {
-		const res = await fetch('/api/signin', { method: 'DELETE' });
+		await fetch('/api/signin', { method: 'DELETE' });
 		goto('/');
 	}
 </script>

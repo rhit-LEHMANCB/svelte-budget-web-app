@@ -25,7 +25,7 @@ export const firebaseConfig = {
 function makeApp() {
 	const apps = getApps();
 	if (apps.length > 0) {
-		return apps[0]!;
+		return apps[0];
 	}
 
 	return initializeApp(firebaseConfig);

@@ -1,10 +1,8 @@
 <script lang="ts">
-	import { invalidateAll } from '$app/navigation';
 	import { successToast } from '$lib/Hooks/toasts';
 	import { profileSchema } from '$lib/schemas';
 	import type { PageData } from './$types';
 	import { superForm } from 'sveltekit-superforms/client';
-	import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
 
 	export let data: PageData;
 
