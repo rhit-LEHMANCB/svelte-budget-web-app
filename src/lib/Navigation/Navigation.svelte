@@ -55,7 +55,7 @@
 			{#if isAdmin}
 				<li>
 					<a
-						href="/manager/admin"
+						href="/manager/admin/properties"
 						on:click={drawerClose}
 						class:bg-primary-active-token={$page.url.pathname.startsWith('/manager/admin')}
 						><IconSettings class="mr-2" />Admin</a
