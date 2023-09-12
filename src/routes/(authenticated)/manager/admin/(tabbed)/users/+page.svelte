@@ -5,4 +5,4 @@
 	export let data: PageData;
 </script>
 
-<UsersTab users={data.users}/>
+<UsersTab users={data.users} />
