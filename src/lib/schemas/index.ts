@@ -17,3 +17,10 @@ export const profileSchema = z.object({
 });
 
 export const emailSchema = z.string().email();
+
+export const propertySchema = z.object({
+	title: z
+		.string({ required_error: 'Title is required' })
+		.nonempty('Title is required')
+		.max(500, 'Title cannot exceed 500 characters')
+});

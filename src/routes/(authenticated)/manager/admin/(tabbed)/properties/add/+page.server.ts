@@ -1,8 +1,8 @@
 import type { PageServerLoad } from './$types';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import { adminDB } from '$lib/server/admin';
+import { propertySchema } from '$lib/schemas';
 import { error } from '@sveltejs/kit';
-import { profileSchema } from '$lib/schemas';
 
 export const load = (async (event) => {
 	if (!event.locals.userID) {
@@ -10,7 +10,11 @@ export const load = (async (event) => {
 	}
 	const userData = (await adminDB.collection('users').doc(event.locals.userID).get()).data();
 
-	const form = await superValidate(userData, profileSchema);
+	if (!userData || !userData.permissions || userData.permissions !== 'admin') {
+		throw error(401, 'You must be an admin to do this.');
+	}
+
+    const form = await superValidate(propertySchema);
 	return {
 		form
 	};
@@ -18,17 +22,24 @@ export const load = (async (event) => {
 
 export const actions = {
 	default: async (event) => {
-		const form = await superValidate(event, profileSchema);
+		const form = await superValidate(event, propertySchema);
 
 		if (!event.locals.userID) {
 			throw error(401, 'You must be logged in to do this.');
+		}
+
+		const userData = (await adminDB.collection('users').doc(event.locals.userID).get()).data();
+
+		if (!userData || !userData.permissions || userData.permissions !== 'admin') {
+			throw error(401, 'You must be an admin to do this.');
 		}
 
 		if (!form.valid) {
 			return message(form, 'Invalid form');
 		}
 
-		await adminDB.collection('users').doc(event.locals.userID).update(form.data);
+		await adminDB.collection('properties').add(form.data);
 		return message(form, 'Form submitted');
 	}
 };
+
