@@ -16,7 +16,9 @@
 				<span>Properties</span>
 			</div>
 		</TabAnchor>
-		<TabAnchor href="/manager/admin/users" selected={$page.url.pathname.startsWith('/manager/admin/users')}
+		<TabAnchor
+			href="/manager/admin/users"
+			selected={$page.url.pathname.startsWith('/manager/admin/users')}
 			><div class="flex gap-2">
 				<IconUsers />
 				<span>Users</span>

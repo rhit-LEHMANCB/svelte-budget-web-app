@@ -13,11 +13,16 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 		throw error(401, 'You must be an admin to do this.');
 	}
 
-    await adminDB.collection('properties').doc(params.propertyId).delete().then(() => {
-        return json({status: 'Property Deleted'});
-    }).catch((err) => {
-        console.log(err.message);
-        throw error(500, err);
-    });
-    return json({status: 'Error deleting property'});
+	await adminDB
+		.collection('properties')
+		.doc(params.propertyId)
+		.delete()
+		.then(() => {
+			return json({ status: 'Property Deleted' });
+		})
+		.catch((err) => {
+			console.log(err.message);
+			throw error(500, err);
+		});
+	return json({ status: 'Error deleting property' });
 };

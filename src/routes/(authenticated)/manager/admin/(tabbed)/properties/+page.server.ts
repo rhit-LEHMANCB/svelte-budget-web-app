@@ -4,7 +4,7 @@ import type { PageServerLoad } from './$types';
 
 export const load = (async (event) => {
 	const usersRef = adminDB.collection('users');
-    
+
 	if (!event.locals.userID) {
 		throw error(401, 'You must be logged in to do this.');
 	}
@@ -15,7 +15,7 @@ export const load = (async (event) => {
 		throw redirect(303, '/manager');
 	}
 
-    const propertiesRef = adminDB.collection('properties');
+	const propertiesRef = adminDB.collection('properties');
 	const properties = await propertiesRef.orderBy('title').get();
 
 	return {

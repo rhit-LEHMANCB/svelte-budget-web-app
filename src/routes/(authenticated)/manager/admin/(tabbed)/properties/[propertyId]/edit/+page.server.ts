@@ -14,7 +14,11 @@ export const load = (async (event) => {
 		throw error(401, 'You must be an admin to do this.');
 	}
 
-	const form = await superValidate(propertySchema);
+	const propertyData = (
+		await adminDB.collection('properties').doc(event.params.propertyId).get()
+	).data();
+
+	const form = await superValidate(propertyData, propertySchema);
 	return {
 		form
 	};
@@ -38,7 +42,7 @@ export const actions = {
 			return message(form, 'Invalid form');
 		}
 
-		await adminDB.collection('properties').add(form.data);
+		await adminDB.collection('properties').doc(event.params.propertyId).set(form.data);
 		return message(form, 'Form submitted');
 	}
 };

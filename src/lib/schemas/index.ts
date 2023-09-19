@@ -32,7 +32,8 @@ export const propertySchema = z.object({
 			required_error: 'Bedrooms is required',
 			invalid_type_error: 'Bedrooms must be a number'
 		})
-		.positive('Bedrooms must be greater than 0'),
+		.positive('Bedrooms must be greater than 0')
+		.int('Bedrroms must be an integer'),
 	bathrooms: z
 		.number({
 			required_error: 'Bathrooms is required',
@@ -49,8 +50,15 @@ export const propertySchema = z.object({
 	rent: z
 		.number({ required_error: 'Rent is required', invalid_type_error: 'Rent must be a number' })
 		.positive('Rent must be greater than 0'),
-	address: z
-		.string({ required_error: 'Address is required' })
-		.nonempty('Address is required')
-		.max(500, 'Address cannot exceed 500 characters')
+	streetAddress: z
+		.string({ required_error: 'Street address is required' })
+		.nonempty('Street address is required')
+		.max(50, 'Street address cannot exceed 50 characters'),
+	apartmentInfo: z.string().max(50, 'Apartment info cannot exceed 50 characters'),
+	city: z.string().nonempty().max(50, 'City cannot exceed 50 characters'),
+	state: z
+		.string()
+		.min(2, 'Please enter a valid state code')
+		.max(2, 'Please enter a valid state code'),
+	zip: z.string().regex(/^[0-9]{5}(?:-[0-9]{4})?$/, 'Please enter a valid zip code')
 });
