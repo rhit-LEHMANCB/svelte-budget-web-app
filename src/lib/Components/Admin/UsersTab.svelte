@@ -94,7 +94,7 @@
 >
 <div class="grid grid-flow-row p-5 gap-5">
 	{#each paginatedUsers as user}
-		<div class="card p-5 bg-surface-200 flex flex-initial gap-2">
+		<div class="card p-5 bg-surface-200 flex flex-initial flex-wrap gap-2">
 			<strong class="h4">{`${user.data.firstName} ${user.data.lastName}`}</strong>
 			<p>{user.data.email}</p>
 			<p>{user.data.phoneNumber}</p>

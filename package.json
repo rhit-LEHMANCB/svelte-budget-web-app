@@ -39,8 +39,9 @@
 	"dependencies": {
 		"@tabler/icons-svelte": "^2.30.0",
 		"firebase-admin": "^11.10.1",
+		"google-maps": "^4.3.3",
 		"validator": "^13.11.0",
-		"zod": "^3.22.1",
-		"vite": "^4.4.2"
+		"vite": "^4.4.2",
+		"zod": "^3.22.1"
 	}
 }
