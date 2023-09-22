@@ -101,7 +101,7 @@
 		<strong class="h3 mx-5 truncate">{$form.title == '' ? 'New Property' : $form.title}</strong>
 	</div>
 	<hr />
-	<form method="POST" action='?/basicInfo' use:enhance class="m-5">
+	<form method="POST" action="?/basicInfo" use:enhance class="m-5">
 		<div class="flex flex-col gap-4 mt-2">
 			<strong class="h4">Basic Info</strong>
 			<div class="grid grid-cols-2 gap-4">

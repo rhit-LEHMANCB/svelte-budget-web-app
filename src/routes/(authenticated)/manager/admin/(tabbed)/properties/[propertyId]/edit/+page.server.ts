@@ -4,9 +4,7 @@ import { adminDB, adminStorage } from '$lib/server/admin';
 import { propertySchema } from '$lib/schemas';
 import { error, fail } from '@sveltejs/kit';
 import { PUBLIC_FB_STORAGE_BUCKET } from '$env/static/public';
-import { writeFileSync, unlinkSync } from 'fs';
-import { getDownloadURL } from 'firebase-admin/storage';
-import type { DocumentWithId } from '../../../../../../../../app';
+import type { PhotoItem } from '../../../../../../../../app';
 import { FieldValue } from 'firebase-admin/firestore';
 
 export const load = (async (event) => {
@@ -28,7 +26,7 @@ export const load = (async (event) => {
 	}
 
 	const form = await superValidate(propertyData, propertySchema);
-	const photos: {id: string, photoUrl: string}[] = propertyData.photos ?? []
+	const photos: PhotoItem[] = propertyData.photos ?? [];
 	return {
 		form,
 		photos
@@ -73,18 +71,26 @@ export const actions = {
 			return fail(400);
 		}
 		const storageRef = adminStorage.bucket(`gs://${PUBLIC_FB_STORAGE_BUCKET}`);
-		await Promise.all(files.map(async (entry, index) => {
-			const file = entry as File;
-			const ext = file.name.split('.').pop()
-			const fileName = `${index}-${Date.now().toString()}.${ext}`;
-			const blob = storageRef.file(`properties/${params.propertyId}/images/${fileName}`)
-			const blobSteam = blob.createWriteStream({resumable: false});
-			blobSteam.end(new Uint8Array(await file.arrayBuffer()));
-			return {id: fileName, photoUrl: `https://firebasestorage.googleapis.com/v0/b/lehman-realty.appspot.com/o/properties%2F${params.propertyId}%2Fimages%2F${fileName}?alt=media`};
-		})).then(async (files) => {
-			await adminDB.collection('properties').doc(params.propertyId).update({
-				photos: FieldValue.arrayUnion(...files)
-			  });
+		await Promise.all(
+			files.map(async (entry, index) => {
+				const file = entry as File;
+				const ext = file.name.split('.').pop();
+				const fileName = `${index}-${Date.now().toString()}.${ext}`;
+				const blob = storageRef.file(`properties/${params.propertyId}/images/${fileName}`);
+				const blobSteam = blob.createWriteStream({ resumable: false });
+				blobSteam.end(new Uint8Array(await file.arrayBuffer()));
+				return {
+					id: fileName,
+					photoUrl: `https://firebasestorage.googleapis.com/v0/b/lehman-realty.appspot.com/o/properties%2F${params.propertyId}%2Fimages%2F${fileName}?alt=media`
+				};
+			})
+		).then(async (files) => {
+			await adminDB
+				.collection('properties')
+				.doc(params.propertyId)
+				.update({
+					photos: FieldValue.arrayUnion(...files)
+				});
 		});
 	}
 };

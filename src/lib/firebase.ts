@@ -10,7 +10,6 @@ import {
 	PUBLIC_FB_PROJECT_ID,
 	PUBLIC_FB_STORAGE_BUCKET
 } from '$env/static/public';
-import { getStorage } from 'firebase/storage';
 
 // Your web app's Firebase configuration
 export const firebaseConfig = {

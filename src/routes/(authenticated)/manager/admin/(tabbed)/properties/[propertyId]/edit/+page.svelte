@@ -2,19 +2,19 @@
 	import type { PageData } from './$types';
 	import PropertyForm from '$lib/Components/Forms/PropertyForm.svelte';
 	import { enhance } from '$app/forms';
-	import { IconMinus, IconPhotoMinus, IconPhotoSearch } from '@tabler/icons-svelte';
 	import SortablePhotos from '$lib/Components/SortablePhotos.svelte';
 	import { errorToast, successToast } from '$lib/Hooks/toasts';
 	import { page } from '$app/stores';
 	import { invalidateAll } from '$app/navigation';
+	import type { PhotoItem } from '../../../../../../../../app';
 
 	export let data: PageData;
 
 	$: photos = data.photos;
 
 	async function sortList(e: CustomEvent) {
-		  const newList = e.detail;
-		  photos = newList;
+		const newList = e.detail;
+		photos = newList;
 		try {
 			await fetch(`/api/property/${$page.params.propertyId}/photos`, {
 				method: 'POST',
@@ -30,7 +30,7 @@
 		}
 	}
 
-	async function deleteLink(item: any) {
+	async function deleteLink(item: PhotoItem) {
 		try {
 			await fetch(`/api/property/${$page.params.propertyId}/photos`, {
 				method: 'DELETE',
