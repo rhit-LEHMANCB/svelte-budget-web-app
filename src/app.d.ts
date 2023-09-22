@@ -15,3 +15,8 @@ export interface DocumentWithId {
 	id: string;
 	data: FirebaseFirestore.DocumentData;
 }
+
+export interface PhotoItem {
+	id: string;
+	photoUrl: string;
+}

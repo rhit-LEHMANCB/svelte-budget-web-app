@@ -3,6 +3,7 @@ import { getFirestore } from 'firebase-admin/firestore';
 import { FB_CLIENT_EMAIL, FB_PRIVATE_KEY } from '$env/static/private';
 import { PUBLIC_FB_PROJECT_ID } from '$env/static/public';
 import pkg from 'firebase-admin';
+import { getStorage } from 'firebase-admin/storage';
 
 try {
 	pkg.initializeApp({
@@ -18,3 +19,4 @@ try {
 
 export const adminDB = getFirestore();
 export const adminAuth = getAuth();
+export const adminStorage = getStorage();
