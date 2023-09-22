@@ -62,3 +62,4 @@ export const propertySchema = z.object({
 		.max(2, 'Please enter a valid state code'),
 	zip: z.string().regex(/^[0-9]{5}(?:-[0-9]{4})?$/, 'Please enter a valid zip code')
 });
+export type PropertySchema = typeof propertySchema;

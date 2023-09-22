@@ -1,15 +1,16 @@
 <script lang="ts">
 	import { superForm } from 'sveltekit-superforms/client';
-	import { propertySchema } from '$lib/schemas';
+	import { propertySchema, type PropertySchema } from '$lib/schemas';
 	import { successToast } from '$lib/Hooks/toasts';
 	import { IconArrowLeft, IconCurrencyDollar } from '@tabler/icons-svelte';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { loadGoogle } from '$lib/google';
+	import type { SuperValidated } from 'sveltekit-superforms';
 
-	export let dataForm;
+	export let data: SuperValidated<PropertySchema>;
 
-	const { form, errors, enhance } = superForm(dataForm, {
+	const { form, errors, enhance } = superForm(data, {
 		customValidity: true,
 		validators: propertySchema,
 		onUpdated({ form }) {
@@ -97,10 +98,10 @@
 			class="btn btn-sm variant-filled-primary ml-5"
 			><IconArrowLeft class="mr-2" />Properties</button
 		>
-		<strong class="h3 mr-5">New Property</strong>
+		<strong class="h3 mx-5 truncate">{$form.title == '' ? 'New Property' : $form.title}</strong>
 	</div>
 	<hr />
-	<form method="POST" use:enhance class="m-5">
+	<form method="POST" action='?/basicInfo' use:enhance class="m-5">
 		<div class="flex flex-col gap-4 mt-2">
 			<strong class="h4">Basic Info</strong>
 			<div class="grid grid-cols-2 gap-4">
@@ -235,7 +236,9 @@
 					>
 				</div>
 			</div>
+			<div class="justify-self-start">
+				<button type="submit" class="btn variant-filled-secondary">Save</button>
+			</div>
 		</div>
-		<button type="submit" class="btn variant-filled-secondary my-5">Save</button>
 	</form>
 </div>

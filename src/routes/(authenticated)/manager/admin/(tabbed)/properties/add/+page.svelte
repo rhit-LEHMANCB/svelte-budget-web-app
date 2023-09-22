@@ -5,4 +5,4 @@
 	export let data: PageData;
 </script>
 
-<PropertyForm dataForm={data.form} />
+<PropertyForm data={data.form} />
