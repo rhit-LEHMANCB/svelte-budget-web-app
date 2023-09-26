@@ -21,7 +21,7 @@ export const load = (async (event) => {
 }) satisfies PageServerLoad;
 
 export const actions = {
-	default: async (event) => {
+	basicInfo: async (event) => {
 		const form = await superValidate(event, propertySchema);
 
 		if (!event.locals.userID) {
@@ -38,7 +38,7 @@ export const actions = {
 			return message(form, 'Invalid form');
 		}
 
-		await adminDB.collection('properties').add(form.data);
-		return message(form, 'Form submitted');
+		const newDoc = await adminDB.collection('properties').add(form.data);
+		return message(form, `id${newDoc.id}`);
 	}
 };
