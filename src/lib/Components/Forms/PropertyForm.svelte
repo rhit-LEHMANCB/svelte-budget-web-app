@@ -17,6 +17,10 @@
 			if (form.message === 'Form submitted') {
 				// Display the message using a toast library
 				successToast('Successfully added info.');
+			} else if (form.message.startsWith('id')) {
+				successToast('Successfully created property');
+				const id = form.message.slice(2);
+				goto(`/manager/admin/properties/${id}/edit`);
 			}
 		}
 	});

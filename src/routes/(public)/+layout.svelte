@@ -6,7 +6,7 @@
 		drawerStore,
 		type DrawerSettings
 	} from '@skeletonlabs/skeleton';
-	import Navigation from '$lib/Navigation/Navigation.svelte';
+	import Navigation from '$lib/Components/Navigation/Navigation.svelte';
 	import { goto } from '$app/navigation';
 
 	const drawerSettings: DrawerSettings = {

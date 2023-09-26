@@ -46,6 +46,12 @@
 			errorToast('Error deleting photo.');
 		}
 	}
+
+	function handleError(ev: Event, item: PhotoItem) {
+		if (ev.target as HTMLImageElement) {
+			(ev.target as HTMLImageElement).src = item.photoUrl;
+		}
+	}
 </script>
 
 <PropertyForm data={data.form} />
@@ -73,7 +79,7 @@
 	<SortablePhotos list={photos} on:sort={sortList} let:item let:index>
 		<div class="group relative">
 			<div class="w-40 h-40 overflow-hidden flex items-center justify-center">
-				<img src={item.photoUrl} alt={item.id} />
+				<img src={item.photoUrl} alt={item.id} on:error={(ev) => handleError(ev, item)} />
 			</div>
 			<button
 				on:click={() => deleteLink(item)}

@@ -8,7 +8,7 @@
 		Modal,
 		Toast
 	} from '@skeletonlabs/skeleton';
-	import Navigation from '$lib/Navigation/Navigation.svelte';
+	import Navigation from '$lib/Components/Navigation/Navigation.svelte';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import type { LayoutData } from './$types';

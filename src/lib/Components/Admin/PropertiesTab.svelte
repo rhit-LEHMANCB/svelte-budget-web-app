@@ -59,16 +59,17 @@
 >
 <div class="grid grid-flow-row p-5 gap-5">
 	{#each paginatedProperties as property}
-		<div class="card p-5 bg-surface-200 flex flex-initial gap-2">
-			<a href={`/manager/admin/properties/${property.id}/edit`} class="h4"
-				>{`${property.data.title}`}</a
-			>
+		<a
+			href={`/manager/admin/properties/${property.id}/edit`}
+			class="card p-5 bg-surface-200 flex flex-initial gap-2"
+		>
+			<strong class="h4">{`${property.data.title}`}</strong>
 			<div class="flex grow justify-end">
 				<button on:click={() => confirmModal(property)} class="btn-icon btn-sm variant-filled-error"
 					><IconHomeMinus /></button
 				>
 			</div>
-		</div>
+		</a>
 	{/each}
 	<Paginator bind:settings={page} showFirstLastButtons={false} showPreviousNextButtons={true} />
 </div>
