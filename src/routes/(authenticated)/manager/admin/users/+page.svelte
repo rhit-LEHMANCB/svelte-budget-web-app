@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { PageData } from './$types';
 	import { Paginator } from '@skeletonlabs/skeleton';
 	import { IconUserMinus, IconUserPlus } from '@tabler/icons-svelte';
 	import { modalStore, type ModalSettings } from '@skeletonlabs/skeleton';
@@ -6,19 +7,19 @@
 	import { sendPasswordResetEmail } from 'firebase/auth';
 	import { auth } from '$lib/firebase';
 	import { errorToast, successToast } from '$lib/Hooks/toasts';
-	import type { DocumentWithId } from '../../../app';
 	import { invalidateAll } from '$app/navigation';
+	import type { DocumentWithId } from '../../../../../app';
 
-	export let users: DocumentWithId[];
+	export let data: PageData;
 
 	let page = {
 		offset: 0,
 		limit: 5,
-		size: users.length,
+		size: data.users.length,
 		amounts: [1, 2, 5, 10]
 	};
 
-	$: paginatedUsers = users.slice(
+	$: paginatedUsers = data.users.slice(
 		page.offset * page.limit, // start
 		page.offset * page.limit + page.limit // end
 	);
@@ -89,10 +90,10 @@
 	}
 </script>
 
-<button on:click={addUserClicked} class="btn btn-sm variant-filled-primary ml-5"
-	><IconUserPlus class="mr-2" />Add User</button
->
 <div class="grid grid-flow-row p-5 gap-5">
+	<button on:click={addUserClicked} class="btn btn-sm variant-filled-primary justify-self-start"
+		><IconUserPlus class="mr-2" />Add User</button
+	>
 	{#each paginatedUsers as user}
 		<div class="card p-5 bg-surface-200 flex flex-initial flex-wrap gap-2">
 			<strong class="h4">{`${user.data.firstName} ${user.data.lastName}`}</strong>

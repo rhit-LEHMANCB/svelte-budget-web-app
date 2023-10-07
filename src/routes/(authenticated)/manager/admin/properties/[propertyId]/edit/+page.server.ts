@@ -4,8 +4,8 @@ import { adminDB, adminStorage } from '$lib/server/admin';
 import { propertySchema } from '$lib/schemas';
 import { error, fail } from '@sveltejs/kit';
 import { PUBLIC_FB_STORAGE_BUCKET } from '$env/static/public';
-import type { PhotoItem } from '../../../../../../../../app';
 import { FieldValue } from 'firebase-admin/firestore';
+import type { PhotoItem } from '../../../../../../../app';
 
 export const load = (async (event) => {
 	if (!event.locals.userID) {
@@ -25,11 +25,19 @@ export const load = (async (event) => {
 		throw error(500, 'Error retrieving property');
 	}
 
+	// const usersOptions = (await adminDB.collection('users').get()).docs.map((doc) => ({label: `${doc.data().firstName} ${doc.data().lastName}`, value: doc.id}));
+
+	const usersOptions = [];
+	for (let i = 0; i < 100; i++) {
+		usersOptions.push({ label: 'blah blah', value: 'more  blah' });
+	}
+
 	const form = await superValidate(propertyData, propertySchema);
 	const photos: PhotoItem[] = propertyData.photos ?? [];
 	return {
 		form,
-		photos
+		photos,
+		usersOptions
 	};
 }) satisfies PageServerLoad;
 

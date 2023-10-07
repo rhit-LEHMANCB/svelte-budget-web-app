@@ -2,7 +2,7 @@
 	import { superForm } from 'sveltekit-superforms/client';
 	import { propertySchema, type PropertySchema } from '$lib/schemas';
 	import { successToast } from '$lib/Hooks/toasts';
-	import { IconArrowLeft, IconCurrencyDollar } from '@tabler/icons-svelte';
+	import { IconCurrencyDollar } from '@tabler/icons-svelte';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { loadGoogle } from '$lib/google';
@@ -95,154 +95,143 @@
 	}
 </script>
 
-<div>
-	<div class="flex flex-row justify-between mb-4">
-		<button
-			on:click={() => goto('/manager/admin/properties')}
-			class="btn btn-sm variant-filled-primary ml-5"
-			><IconArrowLeft class="mr-2" />Properties</button
-		>
-		<strong class="h3 mx-5 truncate">{$form.title == '' ? 'New Property' : $form.title}</strong>
-	</div>
-	<hr />
-	<form method="POST" action="?/basicInfo" use:enhance class="m-5">
-		<div class="flex flex-col gap-4 mt-2">
-			<strong class="h4">Basic Info</strong>
+<form method="POST" action="?/basicInfo" use:enhance class="pt-0 p-5">
+	<div class="flex flex-col gap-4">
+		<strong class="h4">Basic Info</strong>
+		<div class="grid grid-cols-2 gap-4">
+			<label class="label"
+				><span>Title</span><input
+					name="title"
+					bind:value={$form.title}
+					class="input"
+					class:input-error={$errors.title}
+					title="Title"
+					type="text"
+				/></label
+			>
+			<label class="label"
+				><span>Rent</span>
+				<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
+					<div class="input-group-shim"><IconCurrencyDollar /></div>
+					<input
+						name="rent"
+						bind:value={$form.rent}
+						class:input-error={$errors.rent}
+						title="Rent"
+						type="number"
+					/>
+				</div></label
+			>
+		</div>
+		<div>
+			<label class="label"
+				><span>Description</span><textarea
+					name="description"
+					bind:value={$form.description}
+					rows="4"
+					class="textarea"
+					class:input-error={$errors.description}
+					title="Description"
+				/></label
+			>
+		</div>
+		<div class="grid grid-cols-3 gap-4">
+			<label class="label"
+				><span>Bedrooms</span><input
+					name="bedrooms"
+					bind:value={$form.bedrooms}
+					class="input"
+					class:input-error={$errors.bedrooms}
+					title="Bedrooms"
+					type="number"
+				/></label
+			>
+			<label class="label"
+				><span>Bathrooms</span><input
+					name="bathrooms"
+					bind:value={$form.bathrooms}
+					class="input"
+					class:input-error={$errors.bathrooms}
+					title="Bathrooms"
+					type="number"
+					step="0.5"
+				/></label
+			>
+			<label class="label"
+				><span>Square Feet</span><input
+					name="squareFeet"
+					bind:value={$form.squareFeet}
+					class="input"
+					class:input-error={$errors.squareFeet}
+					title="Square Feet"
+					type="number"
+				/></label
+			>
+		</div>
+		<strong class="h4">Address</strong>
+		<div>
+			<label class="label"
+				><span>Address Lookup</span><input
+					class="input"
+					bind:this={addressLookupField}
+					title="Address Lookup"
+					type="text"
+				/></label
+			>
+		</div>
+		<div class="grid md:grid-cols-2 gap-4">
+			<label class="label"
+				><span>Street Address</span><input
+					name="streetAddress"
+					bind:value={$form.streetAddress}
+					class="input"
+					class:input-error={$errors.streetAddress}
+					title="Street Address"
+				/></label
+			>
+			<label class="label"
+				><span>Apartment Info</span><input
+					name="apartmentInfo"
+					bind:value={$form.apartmentInfo}
+					class="input"
+					class:input-error={$errors.apartmentInfo}
+					title="Apartment Info"
+				/></label
+			>
+		</div>
+		<div class="grid md:grid-cols-2 gap-4">
+			<label class="label"
+				><span>City</span><input
+					name="city"
+					bind:value={$form.city}
+					class="input"
+					class:input-error={$errors.city}
+					title="City"
+				/></label
+			>
 			<div class="grid grid-cols-2 gap-4">
 				<label class="label"
-					><span>Title</span><input
-						name="title"
-						bind:value={$form.title}
+					><span>State</span><input
+						name="state"
+						bind:value={$form.state}
 						class="input"
-						class:input-error={$errors.title}
-						title="Title"
-						type="text"
+						class:input-error={$errors.state}
+						title="State"
 					/></label
 				>
 				<label class="label"
-					><span>Rent</span>
-					<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
-						<div class="input-group-shim"><IconCurrencyDollar /></div>
-						<input
-							name="rent"
-							bind:value={$form.rent}
-							class:input-error={$errors.rent}
-							title="Rent"
-							type="number"
-						/>
-					</div></label
-				>
-			</div>
-			<div>
-				<label class="label"
-					><span>Description</span><textarea
-						name="description"
-						bind:value={$form.description}
-						rows="4"
-						class="textarea"
-						class:input-error={$errors.description}
-						title="Description"
-					/></label
-				>
-			</div>
-			<div class="grid grid-cols-3 gap-4">
-				<label class="label"
-					><span>Bedrooms</span><input
-						name="bedrooms"
-						bind:value={$form.bedrooms}
+					><span>Zip Code</span><input
+						name="zip"
+						bind:value={$form.zip}
 						class="input"
-						class:input-error={$errors.bedrooms}
-						title="Bedrooms"
-						type="number"
+						class:input-error={$errors.zip}
+						title="Zip Code"
 					/></label
 				>
-				<label class="label"
-					><span>Bathrooms</span><input
-						name="bathrooms"
-						bind:value={$form.bathrooms}
-						class="input"
-						class:input-error={$errors.bathrooms}
-						title="Bathrooms"
-						type="number"
-						step="0.5"
-					/></label
-				>
-				<label class="label"
-					><span>Square Feet</span><input
-						name="squareFeet"
-						bind:value={$form.squareFeet}
-						class="input"
-						class:input-error={$errors.squareFeet}
-						title="Square Feet"
-						type="number"
-					/></label
-				>
-			</div>
-			<strong class="h4">Address</strong>
-			<div>
-				<label class="label"
-					><span>Address Lookup</span><input
-						class="input"
-						bind:this={addressLookupField}
-						title="Address Lookup"
-						type="text"
-					/></label
-				>
-			</div>
-			<div class="grid md:grid-cols-2 gap-4">
-				<label class="label"
-					><span>Street Address</span><input
-						name="streetAddress"
-						bind:value={$form.streetAddress}
-						class="input"
-						class:input-error={$errors.streetAddress}
-						title="Street Address"
-					/></label
-				>
-				<label class="label"
-					><span>Apartment Info</span><input
-						name="apartmentInfo"
-						bind:value={$form.apartmentInfo}
-						class="input"
-						class:input-error={$errors.apartmentInfo}
-						title="Apartment Info"
-					/></label
-				>
-			</div>
-			<div class="grid md:grid-cols-2 gap-4">
-				<label class="label"
-					><span>City</span><input
-						name="city"
-						bind:value={$form.city}
-						class="input"
-						class:input-error={$errors.city}
-						title="City"
-					/></label
-				>
-				<div class="grid grid-cols-2 gap-4">
-					<label class="label"
-						><span>State</span><input
-							name="state"
-							bind:value={$form.state}
-							class="input"
-							class:input-error={$errors.state}
-							title="State"
-						/></label
-					>
-					<label class="label"
-						><span>Zip Code</span><input
-							name="zip"
-							bind:value={$form.zip}
-							class="input"
-							class:input-error={$errors.zip}
-							title="Zip Code"
-						/></label
-					>
-				</div>
-			</div>
-			<div class="justify-self-start">
-				<button type="submit" class="btn variant-filled-secondary">Save</button>
 			</div>
 		</div>
-	</form>
-</div>
+		<div class="justify-self-start">
+			<button type="submit" class="btn variant-filled-secondary">Save</button>
+		</div>
+	</div>
+</form>
