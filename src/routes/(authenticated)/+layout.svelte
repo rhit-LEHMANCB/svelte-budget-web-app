@@ -13,6 +13,9 @@
 	import { goto } from '$app/navigation';
 	import type { LayoutData } from './$types';
 	import { IconLogout } from '@tabler/icons-svelte';
+	import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
+	import { storePopup } from '@skeletonlabs/skeleton';
+	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
 	export let data: LayoutData;
 

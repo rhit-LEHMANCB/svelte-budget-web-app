@@ -3,19 +3,20 @@
 	import { IconHomeMinus, IconHomePlus } from '@tabler/icons-svelte';
 	import { modalStore, type ModalSettings } from '@skeletonlabs/skeleton';
 	import { errorToast, successToast } from '$lib/Hooks/toasts';
-	import type { DocumentWithId } from '../../../app';
 	import { goto, invalidateAll } from '$app/navigation';
+	import type { PageData } from './$types';
+	import type { DocumentWithId } from '../../../../../app';
 
-	export let properties: DocumentWithId[];
+	export let data: PageData;
 
 	let page = {
 		offset: 0,
 		limit: 5,
-		size: properties.length,
+		size: data.properties.length,
 		amounts: [1, 2, 5, 10]
 	};
 
-	$: paginatedProperties = properties.slice(
+	$: paginatedProperties = data.properties.slice(
 		page.offset * page.limit, // start
 		page.offset * page.limit + page.limit // end
 	);
@@ -54,10 +55,10 @@
 	}
 </script>
 
-<button on:click={addPropertyClicked} class="btn btn-sm variant-filled-primary ml-5"
-	><IconHomePlus class="mr-2" />Add Property</button
->
 <div class="grid grid-flow-row p-5 gap-5">
+	<button on:click={addPropertyClicked} class="btn btn-sm variant-filled-primary justify-self-start"
+		><IconHomePlus class="mr-2" />Add Property</button
+	>
 	{#each paginatedProperties as property}
 		<a
 			href={`/manager/admin/properties/${property.id}/edit`}
