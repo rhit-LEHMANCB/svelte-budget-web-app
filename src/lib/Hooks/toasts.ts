@@ -1,6 +1,6 @@
-import { toastStore, type ToastSettings } from '@skeletonlabs/skeleton';
+import type { ToastSettings, ToastStore } from '@skeletonlabs/skeleton';
 
-export function successToast(message: string) {
+export function successToast(message: string, toastStore: ToastStore) {
 	const successToast: ToastSettings = {
 		message: message,
 		// Provide any utility or variant background style:
@@ -9,7 +9,7 @@ export function successToast(message: string) {
 	toastStore.trigger(successToast);
 }
 
-export function errorToast(message: string) {
+export function errorToast(message: string, toastStore: ToastStore) {
 	const errorToast: ToastSettings = {
 		message: message,
 		// Provide any utility or variant background style:

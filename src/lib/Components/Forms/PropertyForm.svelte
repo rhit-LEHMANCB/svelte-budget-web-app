@@ -7,6 +7,9 @@
 	import { onMount } from 'svelte';
 	import { loadGoogle } from '$lib/google';
 	import type { SuperValidated } from 'sveltekit-superforms';
+	import { getToastStore } from '@skeletonlabs/skeleton';
+
+	const toastStore = getToastStore();
 
 	export let data: SuperValidated<PropertySchema>;
 
@@ -16,9 +19,9 @@
 		onUpdated({ form }) {
 			if (form.message === 'Form submitted') {
 				// Display the message using a toast library
-				successToast('Successfully added info.');
+				successToast('Successfully added info.', toastStore);
 			} else if (form.message.startsWith('id')) {
-				successToast('Successfully created property');
+				successToast('Successfully created property', toastStore);
 				const id = form.message.slice(2);
 				goto(`/manager/admin/properties/${id}/edit`);
 			}
