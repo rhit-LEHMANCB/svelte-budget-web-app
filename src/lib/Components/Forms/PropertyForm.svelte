@@ -4,10 +4,12 @@
 	import { successToast } from '$lib/Hooks/toasts';
 	import { IconCurrencyDollar } from '@tabler/icons-svelte';
 	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
-	import { loadGoogle } from '$lib/google';
+	import { getContext, onMount, setContext } from 'svelte';
+	import { googleApi, loadGoogle } from '$lib/google';
 	import type { SuperValidated } from 'sveltekit-superforms';
 	import { getToastStore } from '@skeletonlabs/skeleton';
+	import { writable } from 'svelte/store';
+	import type { google } from 'google-maps';
 
 	const toastStore = getToastStore();
 
@@ -33,7 +35,12 @@
 	let addressLookupField: HTMLInputElement;
 
 	onMount(async () => {
-		const google = await loadGoogle();
+		const google = $googleApi;
+		if (!google) {
+			console.warn('Error loading google maps Api');
+			return;
+		}
+		// const google = await loadGoogle();
 		// Create the autocomplete object, restricting the search predictions to
 		// addresses in the US and Canada.
 		autocomplete = new google.maps.places.Autocomplete(addressLookupField, {
