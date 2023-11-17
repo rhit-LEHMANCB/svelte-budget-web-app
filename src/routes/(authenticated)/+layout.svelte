@@ -3,7 +3,7 @@
 		AppBar,
 		AppShell,
 		Drawer,
-		drawerStore,
+		getDrawerStore,
 		type DrawerSettings,
 		Modal,
 		Toast
@@ -17,6 +17,7 @@
 	import { storePopup } from '@skeletonlabs/skeleton';
 	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
+	const drawerStore = getDrawerStore();
 	export let data: LayoutData;
 
 	$: ({ user } = data);

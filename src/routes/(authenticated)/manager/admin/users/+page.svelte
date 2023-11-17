@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { Paginator } from '@skeletonlabs/skeleton';
+	import { Avatar, Paginator, getToastStore } from '@skeletonlabs/skeleton';
 	import { IconUserMinus, IconUserPlus } from '@tabler/icons-svelte';
-	import { modalStore, type ModalSettings } from '@skeletonlabs/skeleton';
+	import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
 	import { emailSchema } from '$lib/schemas';
 	import { sendPasswordResetEmail } from 'firebase/auth';
 	import { auth } from '$lib/firebase';
@@ -10,21 +10,27 @@
 	import { invalidateAll } from '$app/navigation';
 	import type { DocumentWithId } from '../../../../../app';
 
+	const modalStore = getModalStore();
+	const toastStore = getToastStore();
+
 	export let data: PageData;
 
 	let page = {
-		offset: 0,
+		page: 0,
 		limit: 5,
 		size: data.users.length,
 		amounts: [1, 2, 5, 10]
 	};
 
 	$: paginatedUsers = data.users.slice(
-		page.offset * page.limit, // start
-		page.offset * page.limit + page.limit // end
+		page.page * page.limit, // start
+		page.page * page.limit + page.limit // end
 	);
 
 	async function handleResponse(response: string) {
+		if (!response) {
+			return;
+		}
 		try {
 			emailSchema.parse(response);
 			await fetch('/api/user/add', {
@@ -38,9 +44,9 @@
 				url: 'https://lehman-realty.web.app/manager'
 			});
 			invalidateAll();
-			successToast('User Successfully Created.');
+			successToast('User Successfully Created.', toastStore);
 		} catch (error) {
-			errorToast('Please enter a valid email.');
+			errorToast('Please enter a valid email.', toastStore);
 		}
 	}
 
@@ -83,10 +89,10 @@
 			method: 'DELETE'
 		})
 			.then(() => {
-				successToast('User Successfully Removed.');
+				successToast('User Successfully Removed.', toastStore);
 				invalidateAll();
 			})
-			.catch(() => errorToast('Error removing user.'));
+			.catch(() => errorToast('Error removing user.', toastStore));
 	}
 </script>
 
@@ -94,7 +100,22 @@
 	<button on:click={addUserClicked} class="btn btn-sm variant-filled-primary justify-self-start"
 		><IconUserPlus class="mr-2" />Add User</button
 	>
-	{#each paginatedUsers as user}
+	<ul class="list">
+		{#each paginatedUsers as user}
+			<li>
+				<Avatar initials={`${user.data.firstName[0]}${user.data.lastName[0]}`} />
+				<strong>{`${user.data.firstName} ${user.data.lastName}`}</strong>
+				<p>{user.data.email}</p>
+				<p>{user.data.phoneNumber}</p>
+				<div class="flex grow justify-end">
+					<button on:click={() => confirmModal(user)} class="btn-icon btn-sm variant-filled-error"
+						><IconUserMinus /></button
+					>
+				</div>
+			</li>
+		{/each}
+	</ul>
+	<!-- {#each paginatedUsers as user}
 		<div class="card p-5 bg-surface-200 flex flex-initial flex-wrap gap-2">
 			<strong class="h4">{`${user.data.firstName} ${user.data.lastName}`}</strong>
 			<p>{user.data.email}</p>
@@ -105,6 +126,6 @@
 				>
 			</div>
 		</div>
-	{/each}
+	{/each} -->
 	<Paginator bind:settings={page} showFirstLastButtons={false} showPreviousNextButtons={true} />
 </div>

@@ -1,8 +1,11 @@
 <script lang="ts">
 	import { successToast } from '$lib/Hooks/toasts';
 	import { profileSchema } from '$lib/schemas';
+	import { getToastStore } from '@skeletonlabs/skeleton';
 	import type { PageData } from './$types';
 	import { superForm } from 'sveltekit-superforms/client';
+
+	const toastStore = getToastStore();
 
 	export let data: PageData;
 
@@ -12,7 +15,7 @@
 		onUpdated({ form }) {
 			if (form.message === 'Form submitted') {
 				// Display the message using a toast library
-				successToast('Successfully updated user info.');
+				successToast('Successfully updated user info.', toastStore);
 			}
 		}
 	});

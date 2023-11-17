@@ -4,8 +4,8 @@ import { adminDB, adminStorage } from '$lib/server/admin';
 import { propertySchema } from '$lib/schemas';
 import { error, fail } from '@sveltejs/kit';
 import { PUBLIC_FB_STORAGE_BUCKET } from '$env/static/public';
-import { FieldValue } from 'firebase-admin/firestore';
-import type { PhotoItem } from '../../../../../../../app';
+import { FieldPath, FieldValue } from 'firebase-admin/firestore';
+import type { DocumentWithId, PhotoItem } from '../../../../../../../app';
 
 export const load = (async (event) => {
 	if (!event.locals.userID) {
@@ -25,19 +25,47 @@ export const load = (async (event) => {
 		throw error(500, 'Error retrieving property');
 	}
 
-	// const usersOptions = (await adminDB.collection('users').get()).docs.map((doc) => ({label: `${doc.data().firstName} ${doc.data().lastName}`, value: doc.id}));
+	const tenantJunctions = await adminDB
+		.collection('junction_user_property')
+		.where('propertyId', '==', event.params.propertyId)
+		.get();
 
-	const usersOptions = [];
-	for (let i = 0; i < 100; i++) {
-		usersOptions.push({ label: 'blah blah', value: 'more  blah' });
+	const tenantsAsList = tenantJunctions.docs.map((junction) => {
+		return junction.data().tenantId;
+	});
+
+	let usersOptions: { label: string; value: string }[];
+
+	if (tenantsAsList.length > 0) {
+		usersOptions = (
+			await adminDB.collection('users').where(FieldPath.documentId(), 'not-in', tenantsAsList).get()
+		).docs.map((doc) => ({
+			label: `${doc.data().firstName} ${doc.data().lastName}`,
+			value: doc.id
+		}));
+	} else {
+		usersOptions = (await adminDB.collection('users').get()).docs.map((doc) => ({
+			label: `${doc.data().firstName} ${doc.data().lastName}`,
+			value: doc.id
+		}));
 	}
+
+	const tenantPromises = tenantJunctions.docs.map(async (junction) => {
+		const user = await adminDB.collection('users').doc(junction.data().tenantId).get();
+		return { id: user.id, data: user.data() };
+	});
+
+	const tenants: DocumentWithId[] = (await Promise.all(tenantPromises)).filter((tenant) => {
+		return tenant.data;
+	}) as DocumentWithId[];
 
 	const form = await superValidate(propertyData, propertySchema);
 	const photos: PhotoItem[] = propertyData.photos ?? [];
 	return {
 		form,
 		photos,
-		usersOptions
+		usersOptions,
+		tenants
 	};
 }) satisfies PageServerLoad;
 

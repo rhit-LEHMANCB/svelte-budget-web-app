@@ -12,15 +12,29 @@
 		type AutocompleteOption,
 		type PopupSettings,
 		Tab,
-		TabGroup
+		TabGroup,
+		getToastStore,
+		type ModalSettings,
+		getModalStore,
+		Avatar
 	} from '@skeletonlabs/skeleton';
-	import { IconArrowLeft, IconInfoCircle, IconPhoto, IconUserDollar } from '@tabler/icons-svelte';
-	import type { PhotoItem } from '../../../../../../../app';
+	import {
+		IconArrowLeft,
+		IconInfoCircle,
+		IconPhoto,
+		IconUserDollar,
+		IconLinkMinus
+	} from '@tabler/icons-svelte';
+	import type { DocumentWithId, PhotoItem } from '../../../../../../../app';
+
+	const toastStore = getToastStore();
+	const modalStore = getModalStore();
 
 	export let data: PageData;
 
 	$: photos = data.photos;
-	let inputPopupDemo = '';
+	let selectedTenantName = '';
+	let selectedTenantId = '';
 
 	async function sortList(e: CustomEvent) {
 		const newList = e.detail;
@@ -36,7 +50,7 @@
 				invalidateAll();
 			});
 		} catch (error) {
-			errorToast('Error reordering photos.');
+			errorToast('Error reordering photos.', toastStore);
 		}
 	}
 
@@ -49,11 +63,11 @@
 				},
 				body: JSON.stringify({ photo: item })
 			}).then(() => {
-				successToast('Photo successfully deleted.');
+				successToast('Photo successfully deleted.', toastStore);
 				invalidateAll();
 			});
 		} catch (error) {
-			errorToast('Error deleting photo.');
+			errorToast('Error deleting photo.', toastStore);
 		}
 	}
 
@@ -64,7 +78,63 @@
 	}
 
 	function onTenantSelect(event: CustomEvent<AutocompleteOption>): void {
-		inputPopupDemo = event.detail.label;
+		selectedTenantName = event.detail.label;
+		selectedTenantId = event.detail.value as string;
+	}
+
+	function confirmModal(user: DocumentWithId) {
+		const confirmModal: ModalSettings = {
+			type: 'confirm',
+			// Data
+			title: 'Please Confirm',
+			body: `Are you sure you wish to remove ${user.data.firstName} ${user.data.lastName} from this property?`,
+			// TRUE if confirm pressed, FALSE if cancel pressed
+			response: (response) => handleConfirmResponse(response, user.id)
+		};
+		modalStore.trigger(confirmModal);
+	}
+
+	async function handleConfirmResponse(confirmed: boolean, userId: string) {
+		if (confirmed) {
+			await removeJunction(userId);
+		}
+	}
+
+	async function removeJunction(id: string) {
+		await fetch(`/api/property/${$page.params.propertyId}/tenants`, {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ tenantId: id })
+		})
+			.then(() => {
+				successToast('User successfully removed from property.', toastStore);
+				invalidateAll();
+			})
+			.catch(() => errorToast('Error removing user.', toastStore));
+	}
+
+	async function addTenant() {
+		if (!selectedTenantName || !selectedTenantId) {
+			return;
+		}
+		await fetch(`/api/property/${$page.params.propertyId}/tenants`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ tenantId: selectedTenantId })
+		})
+			.then(() => {
+				successToast('Successfully added tenant.', toastStore);
+				selectedTenantId = '';
+				selectedTenantName = '';
+				invalidateAll();
+			})
+			.catch(() => {
+				errorToast('Error adding tenant.', toastStore);
+			});
 	}
 
 	let popupSettings: PopupSettings = {
@@ -143,31 +213,25 @@
 				</SortablePhotos>
 			</form>
 		{:else if tabSet === 2}
-			<form
-				class="flex flex-col gap-4 m-5 pb-5"
-				use:enhance
-				method="POST"
-				action="?/tenants"
-				enctype="multipart/form-data"
-			>
+			<form class="flex flex-col gap-4 mx-5 mt-5">
 				<strong class="h4">Tenants</strong>
 				<div class="grid grid-cols-4 lg:grid-cols-8 gap-4">
 					<input
 						class="input autocomplete col-span-3"
 						type="search"
-						name="autocomplete-search"
-						bind:value={inputPopupDemo}
+						name="tenants"
+						bind:value={selectedTenantName}
 						placeholder="Search..."
 						use:popup={popupSettings}
 					/>
 					<div class="justify-self-start">
-						<button type="submit" class="btn variant-filled-secondary">Add</button>
+						<button on:click={addTenant} class="btn variant-filled-secondary">Add</button>
 					</div>
 				</div>
 				<div class="card w-full max-w-sm shadow-xl" data-popup="popupAutocomplete">
 					<div class="max-h-96 overflow-auto">
 						<Autocomplete
-							bind:input={inputPopupDemo}
+							bind:input={selectedTenantName}
 							options={data.usersOptions}
 							on:selection={onTenantSelect}
 						/>
@@ -175,6 +239,29 @@
 					<div class="arrow bg-surface-100-800-token" />
 				</div>
 			</form>
+			<div class="p-5">
+				<strong class="h4">Current</strong>
+				{#if data.tenants.length > 0}
+					<ul class="list">
+						{#each data.tenants as user}
+							<li>
+								<Avatar initials={`${user.data.firstName[0]}${user.data.lastName[0]}`} />
+								<strong>{`${user.data.firstName} ${user.data.lastName}`}</strong>
+								<p>{user.data.email}</p>
+								<p>{user.data.phoneNumber}</p>
+								<div class="flex grow justify-end">
+									<button
+										on:click={() => confirmModal(user)}
+										class="btn-icon btn-sm variant-filled-error"><IconLinkMinus /></button
+									>
+								</div>
+							</li>
+						{/each}
+					</ul>
+				{:else}
+					<div>No tenants</div>
+				{/if}
+			</div>
 		{/if}
 	</svelte:fragment>
 </TabGroup>

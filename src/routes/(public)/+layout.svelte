@@ -3,11 +3,13 @@
 		AppBar,
 		AppShell,
 		Drawer,
-		drawerStore,
+		getDrawerStore,
 		type DrawerSettings
 	} from '@skeletonlabs/skeleton';
 	import Navigation from '$lib/Components/Navigation/Navigation.svelte';
 	import { goto } from '$app/navigation';
+
+	const drawerStore = getDrawerStore();
 
 	const drawerSettings: DrawerSettings = {
 		width: 'w-[80vw] md:w-[280px]',
