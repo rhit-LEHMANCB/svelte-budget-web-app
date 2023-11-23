@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
 		throw error(400, 'Photo must be a valid type');
 	}
 
-	await adminDB
+	return adminDB
 		.collection('properties')
 		.doc(params.propertyId)
 		.update({
@@ -35,7 +35,6 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
 			console.log(err.message);
 			throw error(500, err);
 		});
-	return json({ status: 'Error reordering photos' });
 };
 
 export const DELETE: RequestHandler = async ({ params, locals, request }) => {
@@ -55,20 +54,18 @@ export const DELETE: RequestHandler = async ({ params, locals, request }) => {
 		throw error(400, 'Photo must be a valid type');
 	}
 
-	await adminStorage
-		.bucket(`gs://${PUBLIC_FB_STORAGE_BUCKET}`)
-		.file(`properties/${params.propertyId}/images/${photo.id}`)
-		.delete()
-		.catch((err) => {
-			throw error(500, err);
-		});
-
-	await adminDB
-		.collection('properties')
-		.doc(params.propertyId)
-		.update({
-			photos: FieldValue.arrayRemove(photo)
-		})
+	return Promise.all([
+		adminDB
+			.collection('properties')
+			.doc(params.propertyId)
+			.update({
+				photos: FieldValue.arrayRemove(photo)
+			}),
+		adminStorage
+			.bucket(`gs://${PUBLIC_FB_STORAGE_BUCKET}`)
+			.file(`properties/${params.propertyId}/images/${photo.id}`)
+			.delete()
+	])
 		.then(() => {
 			return json({ status: 'Photo Deleted' });
 		})
@@ -76,5 +73,4 @@ export const DELETE: RequestHandler = async ({ params, locals, request }) => {
 			console.log(err.message);
 			throw error(500, err);
 		});
-	return json({ status: 'Error deleting photo' });
 };

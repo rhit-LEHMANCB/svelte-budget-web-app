@@ -25,7 +25,22 @@
 	{#if $page.url.pathname.startsWith('/manager')}
 		<ul>
 			{#if isAdmin}
-				<li><a href="/manager/admin" on:click={drawerClose}><IconHome class="mr-2" />Home</a></li>
+				<li>
+					<a
+						href="/manager/admin"
+						on:click={drawerClose}
+						class:bg-primary-active-token={$page.url.pathname === '/manager/admin'}
+						><IconHome class="mr-2" />Home</a
+					>
+				</li>
+				<li>
+					<a
+						href="/manager/profile"
+						on:click={drawerClose}
+						class:bg-primary-active-token={$page.url.pathname.startsWith('/manager/profile')}
+						><IconUser class="mr-2" />Profile</a
+					>
+				</li>
 				<li>
 					<a
 						href="/manager/admin/properties"

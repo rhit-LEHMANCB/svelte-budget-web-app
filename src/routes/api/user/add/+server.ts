@@ -1,6 +1,7 @@
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { adminAuth, adminDB } from '$lib/server/admin';
+import { sendPasswordResetEmail } from '$lib/server/email';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
 	if (!locals.userID) {
@@ -23,14 +24,21 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		permissions: 'user'
 	};
 
-	await adminAuth
-		.createUser({ email: email })
-		.then((userRecord) => {
-			adminDB.collection('users').doc(userRecord.uid).set(newUserDoc);
-		})
-		.catch((error) => {
-			throw error(500, error);
-		});
+	const userRecord = await adminAuth.createUser({ email: email }).catch((err) => {
+		console.log(err.message);
+		throw error(500, err);
+	});
 
-	return json({ status: 'New User Created' });
+	return adminDB
+		.collection('users')
+		.doc(userRecord.uid)
+		.set(newUserDoc)
+		.then(() => {
+			sendPasswordResetEmail(email, true);
+			return json({ status: 'New User Created' });
+		})
+		.catch((err) => {
+			console.log(err.message);
+			throw error(500, err);
+		});
 };

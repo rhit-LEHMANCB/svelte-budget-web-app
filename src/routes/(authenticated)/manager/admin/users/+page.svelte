@@ -4,8 +4,6 @@
 	import { IconUserMinus, IconUserPlus } from '@tabler/icons-svelte';
 	import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
 	import { emailSchema } from '$lib/schemas';
-	import { sendPasswordResetEmail } from 'firebase/auth';
-	import { auth } from '$lib/firebase';
 	import { errorToast, successToast } from '$lib/Hooks/toasts';
 	import { invalidateAll } from '$app/navigation';
 	import type { DocumentWithId } from '../../../../../app';
@@ -33,20 +31,22 @@
 		}
 		try {
 			emailSchema.parse(response);
-			await fetch('/api/user/add', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ email: response })
-			});
-			await sendPasswordResetEmail(auth, response, {
-				url: 'https://lehman-realty.web.app/manager'
-			});
-			invalidateAll();
-			successToast('User Successfully Created.', toastStore);
 		} catch (error) {
 			errorToast('Please enter a valid email.', toastStore);
+			return;
+		}
+		const fetchResponse = await fetch('/api/user/add', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ email: response })
+		});
+		if (fetchResponse.ok) {
+			invalidateAll();
+			successToast('User Successfully Created.', toastStore);
+		} else {
+			errorToast('Error creating user.', toastStore);
 		}
 	}
 
@@ -85,14 +85,15 @@
 	}
 
 	async function removeUser(id: string) {
-		await fetch(`/api/user/${id}`, {
+		const response = await fetch(`/api/user/${id}`, {
 			method: 'DELETE'
-		})
-			.then(() => {
-				successToast('User Successfully Removed.', toastStore);
-				invalidateAll();
-			})
-			.catch(() => errorToast('Error removing user.', toastStore));
+		});
+		if (response.ok) {
+			successToast('User Successfully Removed.', toastStore);
+			invalidateAll();
+		} else {
+			errorToast('Error removing user.', toastStore);
+		}
 	}
 </script>
 
@@ -103,7 +104,10 @@
 	<ul class="list">
 		{#each paginatedUsers as user}
 			<li>
-				<Avatar initials={`${user.data.firstName[0]}${user.data.lastName[0]}`} />
+				<Avatar
+					src={user.data.photoUrl}
+					initials={`${user.data.firstName[0]}${user.data.lastName[0]}`}
+				/>
 				<strong>{`${user.data.firstName} ${user.data.lastName}`}</strong>
 				<p>{user.data.email}</p>
 				<p>{user.data.phoneNumber}</p>
@@ -115,17 +119,5 @@
 			</li>
 		{/each}
 	</ul>
-	<!-- {#each paginatedUsers as user}
-		<div class="card p-5 bg-surface-200 flex flex-initial flex-wrap gap-2">
-			<strong class="h4">{`${user.data.firstName} ${user.data.lastName}`}</strong>
-			<p>{user.data.email}</p>
-			<p>{user.data.phoneNumber}</p>
-			<div class="flex grow justify-end">
-				<button on:click={() => confirmModal(user)} class="btn-icon btn-sm variant-filled-error"
-					><IconUserMinus /></button
-				>
-			</div>
-		</div>
-	{/each} -->
 	<Paginator bind:settings={page} showFirstLastButtons={false} showPreviousNextButtons={true} />
 </div>

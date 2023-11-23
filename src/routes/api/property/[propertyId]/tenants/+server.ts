@@ -19,7 +19,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
 		throw error(400, 'Please provide a Tenant Id');
 	}
 
-	await adminDB
+	return adminDB
 		.collection('junction_user_property')
 		.doc(`${tenantId}_${params.propertyId}`)
 		.set({
@@ -33,7 +33,6 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
 			console.log(err.message);
 			throw error(500, err);
 		});
-	return json({ status: 'Error adding tenant' });
 };
 
 export const DELETE: RequestHandler = async ({ params, locals, request }) => {
@@ -53,7 +52,7 @@ export const DELETE: RequestHandler = async ({ params, locals, request }) => {
 		throw error(400, 'Please provide a Tenant Id');
 	}
 
-	await adminDB
+	return adminDB
 		.collection('junction_user_property')
 		.doc(`${tenantId}_${params.propertyId}`)
 		.delete()
@@ -64,5 +63,4 @@ export const DELETE: RequestHandler = async ({ params, locals, request }) => {
 			console.log(err.message);
 			throw error(500, err);
 		});
-	return json({ status: 'Error removing tenant' });
 };

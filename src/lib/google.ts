@@ -10,20 +10,19 @@ export async function loadGoogle() {
 }
 
 async function googleStore() {
-  
 	if (!globalThis.window) {
-	  console.warn('Google api is not initialized or not in browser');
-	  const { subscribe } = writable<google | null>(null);
-	  return {
-		subscribe,
-	  }
+		console.warn('Google api is not initialized or not in browser');
+		const { subscribe } = writable<google | null>(null);
+		return {
+			subscribe
+		};
 	}
-  
-	const { subscribe } = writable<google | null>(await loadGoogle() ?? null);
-  
+
+	const { subscribe } = writable<google | null>((await loadGoogle()) ?? null);
+
 	return {
-	  subscribe,
+		subscribe
 	};
-  }
-  
-  export const googleApi = await googleStore();
+}
+
+export const googleApi = await googleStore();

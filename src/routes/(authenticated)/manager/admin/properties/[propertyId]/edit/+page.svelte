@@ -39,34 +39,33 @@
 	async function sortList(e: CustomEvent) {
 		const newList = e.detail;
 		photos = newList;
-		try {
-			await fetch(`/api/property/${$page.params.propertyId}/photos`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ photos: newList })
-			}).then(() => {
-				invalidateAll();
-			});
-		} catch (error) {
+		const response = await fetch(`/api/property/${$page.params.propertyId}/photos`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ photos: newList })
+		});
+		if (response.ok) {
+			invalidateAll();
+		} else {
 			errorToast('Error reordering photos.', toastStore);
 		}
 	}
 
 	async function deleteLink(item: PhotoItem) {
-		try {
-			await fetch(`/api/property/${$page.params.propertyId}/photos`, {
-				method: 'DELETE',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ photo: item })
-			}).then(() => {
-				successToast('Photo successfully deleted.', toastStore);
-				invalidateAll();
-			});
-		} catch (error) {
+		const response = await fetch(`/api/property/${$page.params.propertyId}/photos`, {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ photo: item })
+		});
+
+		if (response.ok) {
+			successToast('Photo successfully deleted.', toastStore);
+			invalidateAll();
+		} else {
 			errorToast('Error deleting photo.', toastStore);
 		}
 	}
@@ -101,40 +100,40 @@
 	}
 
 	async function removeJunction(id: string) {
-		await fetch(`/api/property/${$page.params.propertyId}/tenants`, {
+		const response = await fetch(`/api/property/${$page.params.propertyId}/tenants`, {
 			method: 'DELETE',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({ tenantId: id })
-		})
-			.then(() => {
-				successToast('User successfully removed from property.', toastStore);
-				invalidateAll();
-			})
-			.catch(() => errorToast('Error removing user.', toastStore));
+		});
+		if (response.ok) {
+			successToast('User successfully removed from property.', toastStore);
+			invalidateAll();
+		} else {
+			errorToast('Error removing user.', toastStore);
+		}
 	}
 
 	async function addTenant() {
 		if (!selectedTenantName || !selectedTenantId) {
 			return;
 		}
-		await fetch(`/api/property/${$page.params.propertyId}/tenants`, {
+		const response = await fetch(`/api/property/${$page.params.propertyId}/tenants`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({ tenantId: selectedTenantId })
-		})
-			.then(() => {
-				successToast('Successfully added tenant.', toastStore);
-				selectedTenantId = '';
-				selectedTenantName = '';
-				invalidateAll();
-			})
-			.catch(() => {
-				errorToast('Error adding tenant.', toastStore);
-			});
+		});
+		if (response.ok) {
+			successToast('Successfully added tenant.', toastStore);
+			selectedTenantId = '';
+			selectedTenantName = '';
+			invalidateAll();
+		} else {
+			errorToast('Error adding tenant.', toastStore);
+		}
 	}
 
 	let popupSettings: PopupSettings = {
@@ -245,7 +244,10 @@
 					<ul class="list">
 						{#each data.tenants as user}
 							<li>
-								<Avatar initials={`${user.data.firstName[0]}${user.data.lastName[0]}`} />
+								<Avatar
+									src={user.data.photoUrl}
+									initials={`${user.data.firstName[0]}${user.data.lastName[0]}`}
+								/>
 								<strong>{`${user.data.firstName} ${user.data.lastName}`}</strong>
 								<p>{user.data.email}</p>
 								<p>{user.data.phoneNumber}</p>

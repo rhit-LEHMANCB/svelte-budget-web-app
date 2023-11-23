@@ -4,12 +4,10 @@
 	import { successToast } from '$lib/Hooks/toasts';
 	import { IconCurrencyDollar } from '@tabler/icons-svelte';
 	import { goto } from '$app/navigation';
-	import { getContext, onMount, setContext } from 'svelte';
-	import { googleApi, loadGoogle } from '$lib/google';
+	import { onMount } from 'svelte';
+	import { googleApi } from '$lib/google';
 	import type { SuperValidated } from 'sveltekit-superforms';
 	import { getToastStore } from '@skeletonlabs/skeleton';
-	import { writable } from 'svelte/store';
-	import type { google } from 'google-maps';
 
 	const toastStore = getToastStore();
 

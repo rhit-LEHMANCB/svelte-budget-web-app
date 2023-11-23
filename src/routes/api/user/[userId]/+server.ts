@@ -1,6 +1,7 @@
-import { adminDB, adminAuth } from '$lib/server/admin';
+import { adminDB, adminAuth, adminStorage } from '$lib/server/admin';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import { PUBLIC_FB_STORAGE_BUCKET } from '$env/static/public';
 
 export const DELETE: RequestHandler = async ({ params, locals }) => {
 	if (!locals.userID) {
@@ -13,14 +14,18 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 		throw error(401, 'You must be an admin to do this.');
 	}
 
-	await adminAuth
-		.deleteUser(params.userId)
+	return Promise.all([
+		adminAuth.deleteUser(params.userId),
+		adminDB.collection('users').doc(params.userId).delete(),
+		adminStorage.bucket(`gs://${PUBLIC_FB_STORAGE_BUCKET}`).deleteFiles({
+			prefix: `users/${params.userId}/`
+		})
+	])
 		.then(() => {
-			adminDB.collection('users').doc(params.userId).delete();
+			return json({ status: 'User successfully deleted.' });
 		})
 		.catch((err) => {
 			console.log(err.message);
 			throw error(500, err);
 		});
-	return json({ status: 'User Deleted' });
 };
