@@ -47,14 +47,15 @@
 	}
 
 	async function removeProperty(id: string) {
-		await fetch(`/api/property/${id}`, {
+		const response = await fetch(`/api/property/${id}`, {
 			method: 'DELETE'
-		})
-			.then(() => {
-				successToast('Property Successfully Removed.', toastStore);
-				invalidateAll();
-			})
-			.catch(() => errorToast('Error removing property.', toastStore));
+		});
+		if (response.ok) {
+			successToast('Property Successfully Removed.', toastStore);
+			invalidateAll();
+		} else {
+			errorToast('Error removing property.', toastStore);
+		}
 	}
 
 	function handleDeleteClick(event: Event, property: DocumentWithId) {

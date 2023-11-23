@@ -14,15 +14,12 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 		throw error(401, 'You must be an admin to do this.');
 	}
 
-	const bucket = adminStorage.bucket(`gs://${PUBLIC_FB_STORAGE_BUCKET}`);
-	await bucket.deleteFiles({
-		prefix: `properties/${params.propertyId}/`
-	});
-
-	await adminDB
-		.collection('properties')
-		.doc(params.propertyId)
-		.delete()
+	return Promise.all([
+		adminDB.collection('properties').doc(params.propertyId).delete(),
+		adminStorage.bucket(`gs://${PUBLIC_FB_STORAGE_BUCKET}`).deleteFiles({
+			prefix: `properties/${params.propertyId}/`
+		})
+	])
 		.then(() => {
 			return json({ status: 'Property Deleted' });
 		})
@@ -30,5 +27,4 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 			console.log(err.message);
 			throw error(500, err);
 		});
-	return json({ status: 'Error deleting property' });
 };

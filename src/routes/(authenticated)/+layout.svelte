@@ -5,8 +5,7 @@
 		Drawer,
 		getDrawerStore,
 		type DrawerSettings,
-		Modal,
-		Toast
+		getToastStore
 	} from '@skeletonlabs/skeleton';
 	import Navigation from '$lib/Components/Navigation/Navigation.svelte';
 	import { page } from '$app/stores';
@@ -15,9 +14,11 @@
 	import { IconLogout } from '@tabler/icons-svelte';
 	import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
+	import { errorToast, successToast } from '$lib/Hooks/toasts';
 	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
 	const drawerStore = getDrawerStore();
+	const toastStore = getToastStore();
 	export let data: LayoutData;
 
 	$: ({ user } = data);
@@ -32,14 +33,15 @@
 	}
 
 	async function signOutSSR() {
-		await fetch('/api/signin', { method: 'DELETE' });
-		goto('/');
+		const response = await fetch('/api/signin', { method: 'DELETE' });
+		if (response.ok) {
+			successToast('Successfully signed out', toastStore);
+			goto('/');
+		} else {
+			errorToast('There was a problem signing out.', toastStore);
+		}
 	}
 </script>
-
-<Toast />
-
-<Modal />
 
 <Drawer>
 	<Navigation isAdmin={user.permissions === 'admin'} />
