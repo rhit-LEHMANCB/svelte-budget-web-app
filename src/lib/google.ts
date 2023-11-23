@@ -1,6 +1,7 @@
 import { Loader, type LoaderOptions, type google } from 'google-maps';
 import { PUBLIC_FB_API_KEY } from '$env/static/public';
-import { writable } from 'svelte/store';
+
+let googleApi: google | undefined;
 
 export async function loadGoogle() {
 	const options: LoaderOptions = { libraries: ['places'] };
@@ -9,20 +10,11 @@ export async function loadGoogle() {
 	return google;
 }
 
-async function googleStore() {
-	if (!globalThis.window) {
-		console.warn('Google api is not initialized or not in browser');
-		const { subscribe } = writable<google | null>(null);
-		return {
-			subscribe
-		};
+export async function getGoogle(): Promise<google> {
+	if (googleApi) {
+		return googleApi;
 	}
 
-	const { subscribe } = writable<google | null>((await loadGoogle()) ?? null);
-
-	return {
-		subscribe
-	};
+	googleApi = await loadGoogle();
+	return googleApi;
 }
-
-export const googleApi = await googleStore();

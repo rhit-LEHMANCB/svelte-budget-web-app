@@ -5,9 +5,9 @@
 	import { IconCurrencyDollar } from '@tabler/icons-svelte';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import { googleApi } from '$lib/google';
 	import type { SuperValidated } from 'sveltekit-superforms';
 	import { getToastStore } from '@skeletonlabs/skeleton';
+	import { getGoogle } from '$lib/google';
 
 	const toastStore = getToastStore();
 
@@ -33,12 +33,11 @@
 	let addressLookupField: HTMLInputElement;
 
 	onMount(async () => {
-		const google = $googleApi;
+		const google = await getGoogle();
 		if (!google) {
 			console.warn('Error loading google maps Api');
 			return;
 		}
-		// const google = await loadGoogle();
 		// Create the autocomplete object, restricting the search predictions to
 		// addresses in the US and Canada.
 		autocomplete = new google.maps.places.Autocomplete(addressLookupField, {
