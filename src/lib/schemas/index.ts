@@ -20,8 +20,8 @@ export const passwordChangeSchema = z
 	.object({
 		newPassword: z
 			.string({ required_error: 'New password is required' })
-			.min(8, 'Password must be betwwen 8 and 32 characters')
-			.max(32, 'Password must be betwwen 8 and 32 characters')
+			.min(8, 'Password must be between 8 and 32 characters')
+			.max(32, 'Password must be between 8 and 32 characters')
 			.regex(
 				/^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d!@#$%^&*()_+{}|:<>?~\-=[\];',./\\]).{8,32}$/,
 				'Password must contain one uppercase letter, one lowercase, and then either a number or special character'
@@ -34,6 +34,17 @@ export const passwordChangeSchema = z
 	});
 
 export const emailSchema = z.string().email();
+
+export const maintenanceSchema = z.object({
+	subject: z
+		.string({ required_error: 'Please provide a subject' })
+		.min(1, 'Please provide a subject')
+		.max(50, 'Subject cannot exceed 50 characters'),
+	description: z
+		.string({ required_error: 'Please provide a description' })
+		.min(1, 'Please provide a description')
+		.max(10000, 'Description cannot exceed 10000 characters')
+});
 
 export const propertySchema = z.object({
 	title: z

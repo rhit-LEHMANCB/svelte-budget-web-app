@@ -97,7 +97,7 @@
 	}
 </script>
 
-<div class="grid grid-flow-row p-5 gap-5">
+<div class="card m-5 grid grid-flow-row p-5 gap-5">
 	<button on:click={addUserClicked} class="btn btn-sm variant-filled-primary justify-self-start"
 		><IconUserPlus class="mr-2" />Add User</button
 	>

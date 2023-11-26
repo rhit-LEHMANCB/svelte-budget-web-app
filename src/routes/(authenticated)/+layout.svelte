@@ -12,10 +12,7 @@
 	import { goto } from '$app/navigation';
 	import type { LayoutData } from './$types';
 	import { IconLogout } from '@tabler/icons-svelte';
-	import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
-	import { storePopup } from '@skeletonlabs/skeleton';
 	import { errorToast, successToast } from '$lib/Hooks/toasts';
-	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
 	const drawerStore = getDrawerStore();
 	const toastStore = getToastStore();
@@ -36,7 +33,7 @@
 		const response = await fetch('/api/signin', { method: 'DELETE' });
 		if (response.ok) {
 			successToast('Successfully signed out', toastStore);
-			goto('/');
+			goto('/signin');
 		} else {
 			errorToast('There was a problem signing out.', toastStore);
 		}
@@ -65,7 +62,7 @@
 								</svg>
 							</span>
 						</button>
-						<strong class="text-xl uppercase">Property Manager</strong>
+						<strong class="text-xl">LFR Manager</strong>
 					</div>
 				</svelte:fragment>
 				<svelte:fragment slot="trail">

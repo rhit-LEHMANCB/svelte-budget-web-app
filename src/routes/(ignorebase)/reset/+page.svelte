@@ -3,12 +3,19 @@
 	import { page } from '$app/stores';
 	import { errorToast } from '$lib/Hooks/toasts';
 	import { auth } from '$lib/firebase';
-	import { getModalStore, getToastStore, type ModalSettings } from '@skeletonlabs/skeleton';
+	import {
+		getModalStore,
+		getToastStore,
+		popup,
+		type ModalSettings,
+		type PopupSettings
+	} from '@skeletonlabs/skeleton';
 	import { error } from '@sveltejs/kit';
 	import { confirmPasswordReset, verifyPasswordResetCode } from 'firebase/auth';
 	import type { PageData } from './$types';
 	import { superForm } from 'sveltekit-superforms/client';
 	import { passwordChangeSchema } from '$lib/schemas';
+	import { IconQuestionMark } from '@tabler/icons-svelte';
 
 	export let data: PageData;
 
@@ -31,6 +38,12 @@
 		throw error(400, 'Invalid action');
 	}
 
+	const popupHover: PopupSettings = {
+		event: 'hover',
+		target: 'popupHover',
+		placement: 'top'
+	};
+
 	async function handleVerifyPasswordReset(event: Event) {
 		event.preventDefault();
 
@@ -46,8 +59,6 @@
 
 		verifyPasswordResetCode(auth, actionCode)
 			.then(() => {
-				// TODO: Show the reset screen with the user's email and ask the user for
-				// the new password.
 				const newPassword = $form.newPassword;
 
 				// Save the new password.
@@ -81,12 +92,28 @@
 >
 	<div class="card p-3">
 		<form use:enhance class="h-auto m-5">
-			<strong class="h3">Password Reset</strong>
-			<p>Please fill out the information below to change your password.</p>
-			<div class="grid grid-rows-2 grid-flow-col gap-2 mt-2">
+			<strong class="h3">Lehman Family Realty</strong>
+			<p>Please fill out the information below<br /> to create your new password.</p>
+			<div class="grid grid-rows-2 gap-2 mt-2">
 				<div>
 					<label class="label"
-						><span>New Password</span><input
+						><div class="flex flex-row gap-2">
+							<span>New Password</span><button
+								class="badge-icon variant-outline-primary [&>*]:pointer-events-none"
+								use:popup={popupHover}><IconQuestionMark /></button
+							>
+							<div class="card p-4 variant-filled-primary w-64" data-popup="popupHover">
+								<ul>
+									<li>- At least 8 characters</li>
+									<li>- Less than 32 characters</li>
+									<li>- One uppercase letter</li>
+									<li>- One lowercase letter</li>
+									<li>- A number or special character</li>
+								</ul>
+								<div class="arrow variant-filled-primary" />
+							</div>
+						</div>
+						<input
 							name="newPassword"
 							bind:value={$form.newPassword}
 							class="input"
@@ -111,7 +138,7 @@
 			</div>
 			<button
 				on:click={(event) => handleVerifyPasswordReset(event)}
-				class="btn variant-filled-secondary mt-5">Change Password</button
+				class="btn variant-filled-primary mt-5">Change Password</button
 			>
 		</form>
 	</div>

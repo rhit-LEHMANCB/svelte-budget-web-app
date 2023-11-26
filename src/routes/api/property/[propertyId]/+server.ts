@@ -16,6 +16,15 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 
 	return Promise.all([
 		adminDB.collection('properties').doc(params.propertyId).delete(),
+		adminDB
+			.collection('maintenance')
+			.where('propertyId', '==', params.propertyId)
+			.get()
+			.then(function (querySnapshot) {
+				querySnapshot.forEach(function (doc) {
+					doc.ref.delete();
+				});
+			}),
 		adminStorage.bucket(`gs://${PUBLIC_FB_STORAGE_BUCKET}`).deleteFiles({
 			prefix: `properties/${params.propertyId}/`
 		})
