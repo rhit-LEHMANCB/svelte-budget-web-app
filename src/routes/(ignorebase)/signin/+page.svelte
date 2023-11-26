@@ -1,12 +1,19 @@
 <script lang="ts">
 	import { signInWithEmailAndPassword } from 'firebase/auth';
 	import { goto } from '$app/navigation';
-	import { IconExclamationCircle } from '@tabler/icons-svelte';
 	import { auth } from '$lib/firebase';
+	import { errorToast } from '$lib/Hooks/toasts';
+	import { getToastStore } from '@skeletonlabs/skeleton';
 
 	let email: string;
 	let password: string;
 	let loginError: string;
+	const toastStore = getToastStore();
+
+	$: email, password, (loginError = '');
+	$: if (loginError) {
+		errorToast('Your email or password is incorrect.', toastStore);
+	}
 
 	async function signIn() {
 		const credential = await signInWithEmailAndPassword(auth, email, password);
@@ -41,11 +48,9 @@
 	class="h-screen flex items-center justify-center bg-gradient-to-br variant-gradient-primary-secondary"
 >
 	<div class="card p-8">
-		<header class="pb-4">
-			<strong>Lehman Properties</strong>
-			<p>Please sign in to continue.</p>
-		</header>
-		<div class="grid grid-cols-1 gap-4">
+		<strong class="h3">Lehman Family Realty</strong>
+		<p>Please sign in to continue.</p>
+		<div class="grid grid-cols-1 gap-2 mt-2">
 			<label class="label"
 				><span>Email</span><input
 					bind:value={email}
@@ -62,17 +67,11 @@
 					type="password"
 				/></label
 			>
-			<button type="button" on:click={handleSignIn} class="btn variant-filled-primary"
+		</div>
+		<div>
+			<button type="button" on:click={handleSignIn} class="btn variant-filled-primary mt-5"
 				>Sign in</button
 			>
-			{#if loginError}
-				<aside class="alert variant-ghost-error">
-					<IconExclamationCircle />
-					<div class="alert-message">
-						<p>{'Your email or password is incorrect.'}</p>
-					</div>
-				</aside>
-			{/if}
 		</div>
 	</div>
 </div>

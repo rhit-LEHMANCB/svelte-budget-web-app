@@ -43,6 +43,15 @@
 				</li>
 				<li>
 					<a
+						href="/manager/admin/maintenance"
+						on:click={drawerClose}
+						class:bg-primary-active-token={$page.url.pathname.startsWith(
+							'/manager/admin/maintenance'
+						)}><IconTool class="mr-2" />Maintenance</a
+					>
+				</li>
+				<li>
+					<a
 						href="/manager/admin/properties"
 						on:click={drawerClose}
 						class:bg-primary-active-token={$page.url.pathname.startsWith(
@@ -69,9 +78,9 @@
 				</li>
 				<li>
 					<a
-						href="/manager/workorder"
+						href="/manager/maintenance"
 						on:click={drawerClose}
-						class:bg-primary-active-token={$page.url.pathname.startsWith('/manager/workorder')}
+						class:bg-primary-active-token={$page.url.pathname.startsWith('/manager/maintenance')}
 						><IconTool class="mr-2" />Maintenance</a
 					>
 				</li>

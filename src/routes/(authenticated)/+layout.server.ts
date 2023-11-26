@@ -37,16 +37,18 @@ export const load = (async ({ locals }) => {
 		);
 	}
 
-	const userProperty = (
-		await adminDB.collection('properties').doc(userJunctionsQuery.docs[0].data().propertyId).get()
-	).data();
+	const userProperty = await adminDB
+		.collection('properties')
+		.doc(userJunctionsQuery.docs[0].data().propertyId)
+		.get();
 
-	if (!userProperty) {
+	const userPropertyData = userProperty.data();
+	if (!userPropertyData) {
 		throw error(500, 'Failed to find property info.');
 	}
 
 	return {
 		user: userData,
-		userProperty
+		userProperty: { id: userProperty.id, data: userPropertyData }
 	};
 }) satisfies LayoutServerLoad;

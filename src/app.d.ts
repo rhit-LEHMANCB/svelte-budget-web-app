@@ -20,3 +20,16 @@ export interface PhotoItem {
 	id: string;
 	photoUrl: string;
 }
+
+export interface MaintenanceRequest {
+	id: string;
+	subject: string;
+	description: string;
+	workDone?: string;
+	propertyId: string;
+	propertyAddress: string;
+	status: string;
+	dateAdded?: Date;
+	dateClosed?: Date;
+	submitter: string;
+}

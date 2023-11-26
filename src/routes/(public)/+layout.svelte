@@ -43,7 +43,7 @@
 							</svg>
 						</span>
 					</button>
-					<strong class="text-xl uppercase">Lehman Properties</strong>
+					<strong class="text-xl">Lehman Family Realty</strong>
 				</div>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
