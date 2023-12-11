@@ -43,7 +43,7 @@
 		const confirmModal: ModalSettings = {
 			type: 'prompt',
 			// Data
-			title: 'Please Confirm',
+			title: 'Close Maintenance Request',
 			body: `Please provide the work you completed to close this maintenance request.`,
 			// TRUE if confirm pressed, FALSE if cancel pressed
 			response: (response) => handleConfirmResponse(response, request.id)

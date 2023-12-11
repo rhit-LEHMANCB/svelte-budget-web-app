@@ -89,7 +89,7 @@
 								class="input"
 								class:input-error={$errors.email}
 								title="Email"
-								type="text"
+								type="email"
 							/></label
 						>
 					</div>
@@ -102,7 +102,7 @@
 								class="input"
 								class:input-error={$errors.phoneNumber}
 								title="Phone Number"
-								type="text"
+								type="tel"
 							/></label
 						>
 					</div>
