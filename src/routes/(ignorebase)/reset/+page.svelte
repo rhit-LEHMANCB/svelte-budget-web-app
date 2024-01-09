@@ -87,9 +87,7 @@
 	}
 </script>
 
-<div
-	class="h-screen flex items-center justify-center bg-gradient-to-br variant-gradient-primary-secondary"
->
+<div class="h-screen flex items-center justify-center">
 	<div class="card p-3">
 		<form use:enhance class="h-auto m-5">
 			<strong class="h3">Lehman Family Realty</strong>

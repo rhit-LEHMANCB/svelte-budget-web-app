@@ -99,7 +99,7 @@
 										><span>Submitted By: {request.submitter}</span><span
 											>Address: <a
 												class="text-secondary-500 underline"
-												href={`/manager/admin/properties/${request.propertyId}/view`}
+												href={`/manager/admin/properties/${request.propertyId}/edit`}
 												>{request.propertyAddress}</a
 											></span
 										>

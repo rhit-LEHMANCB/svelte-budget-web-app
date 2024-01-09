@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { Avatar, Paginator, getToastStore } from '@skeletonlabs/skeleton';
+	import { getToastStore } from '@skeletonlabs/skeleton';
 	import { IconUserMinus, IconUserPlus, IconUserShare } from '@tabler/icons-svelte';
 	import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
 	import { emailSchema } from '$lib/schemas';
@@ -9,23 +9,13 @@
 	import type { DocumentWithId } from '../../../../../app';
 	import PopupMenu from '$lib/Components/PopupMenu/PopupMenu.svelte';
 	import PopupMenuItem from '$lib/Components/PopupMenu/PopupMenuItem.svelte';
+	import UsersListView from '$lib/Components/Users/UsersListView.svelte';
+	import { viewUserInfoModal } from '$lib/Hooks/modals';
 
 	const modalStore = getModalStore();
 	const toastStore = getToastStore();
 
 	export let data: PageData;
-
-	let page = {
-		page: 0,
-		limit: 5,
-		size: data.users.length,
-		amounts: [1, 2, 5, 10]
-	};
-
-	$: paginatedUsers = data.users.slice(
-		page.page * page.limit, // start
-		page.page * page.limit + page.limit // end
-	);
 
 	async function handleResponse(response: string) {
 		if (!response) {
@@ -103,33 +93,16 @@
 	<button on:click={addUserClicked} class="btn btn-sm variant-filled-primary justify-self-start"
 		><IconUserPlus class="mr-2" />Add User</button
 	>
-	<ul class="list">
-		{#each paginatedUsers as user}
-			<li>
-				<div class="group relative">
-					<Avatar
-						src={user.data.photoUrl}
-						initials={`${user.data.firstName[0]}${user.data.lastName[0]}`}
-					/>
-					{#if !user.data.insurance && user.data.permissions == "user"}
-						<span class="badge-icon variant-filled-warning absolute -left-1 -top-1">!</span>
-					{/if}
-				</div>
-				<strong>{`${user.data.firstName} ${user.data.lastName}`}</strong>
-				<p>{user.data.email}</p>
-				<p>{user.data.phoneNumber}</p>
-				<div class="flex grow justify-end">
-					<PopupMenu id={user.id}>
-						<PopupMenuItem text="View More" onClickFunction={() => confirmModal(user)}>
-							<svelte:fragment slot="icon"><IconUserShare /></svelte:fragment>
-						</PopupMenuItem>
-						<PopupMenuItem text="Delete" onClickFunction={() => confirmModal(user)} isDelete>
-							<svelte:fragment slot="icon"><IconUserMinus /></svelte:fragment>
-						</PopupMenuItem>
-					</PopupMenu>
-				</div>
-			</li>
-		{/each}
-	</ul>
-	<Paginator bind:settings={page} showFirstLastButtons={false} showPreviousNextButtons={true} />
+	<UsersListView users={data.users} paginated>
+		<svelte:fragment slot="actionButton" let:user>
+			<PopupMenu id={user.id}>
+				<PopupMenuItem text="View More" onClickFunction={() => viewUserInfoModal(user, modalStore)}>
+					<svelte:fragment slot="icon"><IconUserShare /></svelte:fragment>
+				</PopupMenuItem>
+				<PopupMenuItem text="Delete" onClickFunction={() => confirmModal(user)} isDelete>
+					<svelte:fragment slot="icon"><IconUserMinus /></svelte:fragment>
+				</PopupMenuItem>
+			</PopupMenu>
+		</svelte:fragment>
+	</UsersListView>
 </div>

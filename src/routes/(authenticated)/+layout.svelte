@@ -8,7 +8,6 @@
 		getToastStore
 	} from '@skeletonlabs/skeleton';
 	import Navigation from '$lib/Components/Navigation/Navigation.svelte';
-	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import type { LayoutData } from './$types';
 	import { IconLogout } from '@tabler/icons-svelte';
@@ -44,35 +43,30 @@
 	<Navigation isAdmin={user.permissions === 'admin'} />
 </Drawer>
 
-<AppShell
-	slotSidebarLeft="bg-surface-500/5 w-0 lg:w-64"
-	slotPageContent="bg-gradient-to-br variant-gradient-primary-secondary"
->
+<AppShell slotSidebarLeft="bg-surface-500/5 w-0 lg:w-64">
 	<svelte:fragment slot="header">
-		{#if !$page.url.pathname.startsWith('/signin')}
-			<AppBar shadow="shadow-xl">
-				<svelte:fragment slot="lead">
-					<div class="flex items-center">
-						<button class="lg:hidden btn btn-sm mr-4" on:click={drawerOpen}>
-							<span>
-								<svg viewBox="0 0 100 80" class="fill-token w-4 h-4">
-									<rect width="100" height="20" />
-									<rect y="30" width="100" height="20" />
-									<rect y="60" width="100" height="20" />
-								</svg>
-							</span>
-						</button>
-						<strong class="text-xl">LFR Manager</strong>
-					</div>
-				</svelte:fragment>
-				<svelte:fragment slot="trail">
-					<span>Welcome, {user.firstName ?? 'New User'}</span>
-					<button type="button" on:click={signOutSSR} class="btn variant-filled"
-						>Sign out<IconLogout class="ml-2" /></button
-					>
-				</svelte:fragment>
-			</AppBar>
-		{/if}
+		<AppBar shadow="shadow-xl" background="bg-secondary-400/100">
+			<svelte:fragment slot="lead">
+				<div class="flex items-center">
+					<button class="lg:hidden btn btn-sm mr-4" on:click={drawerOpen}>
+						<span>
+							<svg viewBox="0 0 100 80" class="fill-token w-4 h-4">
+								<rect width="100" height="20" />
+								<rect y="30" width="100" height="20" />
+								<rect y="60" width="100" height="20" />
+							</svg>
+						</span>
+					</button>
+					<strong class="h3 text-on-primary-token">LFR Manager</strong>
+				</div>
+			</svelte:fragment>
+			<svelte:fragment slot="trail">
+				<span class="text-on-primary-token">Welcome, {user.firstName ?? 'New User'}</span>
+				<button type="button" on:click={signOutSSR} class="btn variant-filled-primary max-sm:hidden"
+					>Sign out<IconLogout class="ml-2" /></button
+				>
+			</svelte:fragment>
+		</AppBar>
 	</svelte:fragment>
 	<svelte:fragment slot="sidebarLeft">
 		<Navigation isAdmin={user.permissions === 'admin'} />

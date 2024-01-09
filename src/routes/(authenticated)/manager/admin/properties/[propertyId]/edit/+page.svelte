@@ -15,8 +15,7 @@
 		TabGroup,
 		getToastStore,
 		type ModalSettings,
-		getModalStore,
-		Avatar
+		getModalStore
 	} from '@skeletonlabs/skeleton';
 	import {
 		IconArrowLeft,
@@ -26,6 +25,7 @@
 		IconLinkMinus
 	} from '@tabler/icons-svelte';
 	import type { DocumentWithId, PhotoItem } from '../../../../../../../app';
+	import UsersListView from '$lib/Components/Users/UsersListView.svelte';
 
 	const toastStore = getToastStore();
 	const modalStore = getModalStore();
@@ -166,7 +166,7 @@
 			<span>Photos</span>
 		</div></Tab
 	>
-	<Tab bind:group={tabSet} name="tab2" value={2}
+	<Tab bind:group={tabSet} name="tenants" value={2}
 		><div class="flex gap-2">
 			<IconUserDollar />
 			<span>Tenants</span>
@@ -241,25 +241,14 @@
 			<div class="p-5">
 				<strong class="h4">Current</strong>
 				{#if data.tenants.length > 0}
-					<ul class="list">
-						{#each data.tenants as user}
-							<li>
-								<Avatar
-									src={user.data.photoUrl}
-									initials={`${user.data.firstName[0]}${user.data.lastName[0]}`}
-								/>
-								<strong>{`${user.data.firstName} ${user.data.lastName}`}</strong>
-								<p>{user.data.email}</p>
-								<p>{user.data.phoneNumber}</p>
-								<div class="flex grow justify-end">
-									<button
-										on:click={() => confirmModal(user)}
-										class="btn-icon btn-sm variant-filled-error"><IconLinkMinus /></button
-									>
-								</div>
-							</li>
-						{/each}
-					</ul>
+					<UsersListView users={data.tenants} class="pt-2">
+						<svelte:fragment slot="actionButton" let:user>
+							<button
+								on:click={() => confirmModal(user)}
+								class="btn-icon btn-sm variant-filled-error"><IconLinkMinus /></button
+							>
+						</svelte:fragment>
+					</UsersListView>
 				{:else}
 					<div>No tenants</div>
 				{/if}

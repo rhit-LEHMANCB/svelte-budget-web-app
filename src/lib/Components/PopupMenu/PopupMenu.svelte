@@ -2,9 +2,9 @@
 	import { popup, type PopupSettings } from '@skeletonlabs/skeleton';
 	import { IconDots } from '@tabler/icons-svelte';
 
-    export let id: string;
+	export let id: string;
 
-    const popupId = `popupMenu-${id}`;
+	const popupId = `popupMenu-${id}`;
 
 	const popupMenu: PopupSettings = {
 		event: 'focus-click',
@@ -13,7 +13,11 @@
 	};
 </script>
 
-<button class="btn-icon btn-icon-sm variant-filled-primary" use:popup={popupMenu}>
+<button
+	class="btn-icon btn-icon-sm variant-filled-primary"
+	on:click={(event) => event.stopPropagation()}
+	use:popup={popupMenu}
+>
 	<IconDots />
 </button>
 <div class="card shadow-xl p-2" data-popup={popupId}>

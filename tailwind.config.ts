@@ -21,6 +21,7 @@ const config = {
 		forms,
 		skeleton({
 			themes: {
+				preset: ['hamlindigo'],
 				custom: [myCustomTheme]
 			}
 		})

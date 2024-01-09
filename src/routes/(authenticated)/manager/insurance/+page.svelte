@@ -1,19 +1,15 @@
 <script lang="ts">
 	import { superForm } from 'sveltekit-superforms/client';
-    import type { PageData } from './$types';
+	import type { PageData } from './$types';
 	import { insuranceSchema } from '$lib/schemas';
 	import { successToast } from '$lib/Hooks/toasts';
 	import { getToastStore } from '@skeletonlabs/skeleton';
 	import DateInput from '$lib/DatePicker/DateInput.svelte';
-    
-    export let data: PageData;
-    const toastStore = getToastStore();
 
-    const {
-		form,
-		errors,
-		enhance
-	} = superForm(data.form, {
+	export let data: PageData;
+	const toastStore = getToastStore();
+
+	const { form, errors, enhance } = superForm(data.form, {
 		customValidity: true,
 		validators: insuranceSchema,
 		onUpdated({ form }) {
@@ -59,17 +55,25 @@
 						<!-- svelte-ignore a11y-label-has-associated-control -->
 						<label class="label"
 							><span>Start Date</span>
-                            <DateInput bind:value={$form.startDate} name="startDate" title="Start Date" errors={$errors.startDate}/>
-                            </label
-						>
+							<DateInput
+								bind:value={$form.startDate}
+								name="startDate"
+								title="Start Date"
+								errors={$errors.startDate}
+							/>
+						</label>
 					</div>
 					<div>
 						<!-- svelte-ignore a11y-label-has-associated-control -->
 						<label class="label"
 							><span>End Date</span>
-                            <DateInput bind:value={$form.endDate} name="endDate" title="End Date" errors={$errors.endDate}/>
-                            </label
-						>
+							<DateInput
+								bind:value={$form.endDate}
+								name="endDate"
+								title="End Date"
+								errors={$errors.endDate}
+							/>
+						</label>
 					</div>
 				</div>
 				<button type="submit" class="btn variant-filled-secondary mt-5">Save</button>

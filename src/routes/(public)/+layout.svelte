@@ -29,9 +29,9 @@
 	<Navigation isAdmin={false} />
 </Drawer>
 
-<AppShell slotSidebarLeft="bg-surface-500/5 w-0 lg:w-64">
+<AppShell slotSidebarLeft="bg-surface-100-800-token w-0 lg:w-64">
 	<svelte:fragment slot="header">
-		<AppBar shadow="shadow-xl">
+		<AppBar shadow="shadow-xl" background="bg-surface-900/5">
 			<svelte:fragment slot="lead">
 				<div class="flex items-center">
 					<button class="lg:hidden btn btn-sm mr-4" on:click={drawerOpen}>

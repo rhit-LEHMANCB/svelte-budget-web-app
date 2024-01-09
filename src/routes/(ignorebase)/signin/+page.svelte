@@ -44,9 +44,7 @@
 	}
 </script>
 
-<div
-	class="h-screen flex items-center justify-center bg-gradient-to-br variant-gradient-primary-secondary"
->
+<div class="h-screen flex items-center justify-center">
 	<div class="card p-8">
 		<strong class="h3">Lehman Family Realty</strong>
 		<p>Please sign in to continue.</p>

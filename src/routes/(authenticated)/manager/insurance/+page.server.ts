@@ -10,14 +10,15 @@ export const load = (async (event) => {
 		throw error(401, 'You must be logged in to do this.');
 	}
 
-	const insuranceDataRaw = (
-		await adminDB.collection('users').doc(event.locals.userID).get()
-	).data()?.insurance;
+	const insuranceDataRaw = (await adminDB.collection('users').doc(event.locals.userID).get()).data()
+		?.insurance;
 
-	let insuranceData: {companyName: string, policyNumber: string, startDate: Date, endDate: Date} | undefined;
+	let insuranceData:
+		| { companyName: string; policyNumber: string; startDate: Date; endDate: Date }
+		| undefined;
 	if (insuranceDataRaw) {
 		insuranceData = {
-			companyName : insuranceDataRaw.companyName,
+			companyName: insuranceDataRaw.companyName,
 			policyNumber: insuranceDataRaw.policyNumber,
 			startDate: new Date(insuranceDataRaw.startDate),
 			endDate: new Date(insuranceDataRaw.endDate)

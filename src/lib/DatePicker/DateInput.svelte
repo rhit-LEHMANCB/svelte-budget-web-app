@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { formatDate } from "./date-utils";
+	import { formatDate } from './date-utils';
 
 	export let value: Date;
 
@@ -10,7 +10,7 @@
 	export let errors: string[] | undefined;
 
 	const onChange = (newValue: string) => {
-		value = new Date(newValue.replace(/-/g, '\/'));
+		value = new Date(newValue.replace(/-/g, '/'));
 	};
 
 	$: convertedValue = value ? formatDate(value) : '';
@@ -18,7 +18,7 @@
 
 <input
 	{name}
-	on:input={e => onChange(e.currentTarget.value)}
+	on:input={(e) => onChange(e.currentTarget.value)}
 	bind:value={convertedValue}
 	class="input"
 	class:input-error={errors}
