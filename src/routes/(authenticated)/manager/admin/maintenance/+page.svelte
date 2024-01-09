@@ -43,7 +43,7 @@
 		const confirmModal: ModalSettings = {
 			type: 'prompt',
 			// Data
-			title: 'Please Confirm',
+			title: 'Close Maintenance Request',
 			body: `Please provide the work you completed to close this maintenance request.`,
 			// TRUE if confirm pressed, FALSE if cancel pressed
 			response: (response) => handleConfirmResponse(response, request.id)
@@ -99,7 +99,7 @@
 										><span>Submitted By: {request.submitter}</span><span
 											>Address: <a
 												class="text-secondary-500 underline"
-												href={`/manager/admin/properties/${request.propertyId}/view`}
+												href={`/manager/admin/properties/${request.propertyId}/edit`}
 												>{request.propertyAddress}</a
 											></span
 										>

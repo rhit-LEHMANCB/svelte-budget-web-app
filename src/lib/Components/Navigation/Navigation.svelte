@@ -4,6 +4,7 @@
 	import {
 		IconBuildingEstate,
 		IconCash,
+		IconClipboardList,
 		IconDashboard,
 		IconHome,
 		IconInfoCircle,
@@ -98,6 +99,14 @@
 						on:click={drawerClose}
 						class:bg-primary-active-token={$page.url.pathname.startsWith('/manager/profile')}
 						><IconUser class="mr-2" />Profile</a
+					>
+				</li>
+				<li>
+					<a
+						href="/manager/insurance"
+						on:click={drawerClose}
+						class:bg-primary-active-token={$page.url.pathname.startsWith('/manager/insurance')}
+						><IconClipboardList class="mr-2" />Insurance</a
 					>
 				</li>
 				<li><a href="/" on:click={drawerClose}><IconInfoCircle class="mr-2" />About Us</a></li>
