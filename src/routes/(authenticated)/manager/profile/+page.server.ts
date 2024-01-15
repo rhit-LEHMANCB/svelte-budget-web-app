@@ -4,6 +4,7 @@ import { adminAuth, adminDB, adminStorage } from '$lib/server/admin';
 import { error, fail } from '@sveltejs/kit';
 import { profileSchema } from '$lib/schemas';
 import { PUBLIC_FB_STORAGE_BUCKET } from '$env/static/public';
+import { stripe } from '$lib/server/stripe';
 
 export const load = (async (event) => {
 	if (!event.locals.userID) {
@@ -29,7 +30,21 @@ export const actions = {
 			return message(form, 'Invalid form');
 		}
 
-		await adminDB.collection('users').doc(event.locals.userID).update(form.data);
+		const userDoc = adminDB.collection('users').doc(event.locals.userID);
+		
+		await userDoc.update(form.data);
+
+		const userData = (await userDoc.get()).data();
+
+		if (!userData) {
+			throw error(500, 'Error retrieving user details to update');
+		}
+
+		await stripe.customers.update(userData.stripeID, {
+			name: `${form.data.firstName} ${form.data.lastName}`,
+			email: form.data.email,
+			phone: form.data.phoneNumber
+		})
 
 		await adminAuth.updateUser(event.locals.userID, {
 			email: form.data.email
