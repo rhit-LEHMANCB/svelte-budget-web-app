@@ -41,6 +41,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		throw error(500, 'Failed to find property info.');
 	}
 
+	//TODO: validate amount is not greater than remaining balance
+	//if (amount > )
+
 	const session = await stripe.checkout.sessions.create({
 		customer: userData.stripeID,
 		billing_address_collection: 'auto',
@@ -53,12 +56,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 					currency: 'usd',
 					product_data: {
 						name: 'Rent',
-						description: `Rent payment for ${userPropertyData.streetAddress}, ${userPropertyData.city}, ${userPropertyData.state}`,
-						metadata: {
-							propertyID: userProperty.id
-						}
+						description: `Rent payment for ${userPropertyData.streetAddress}, ${userPropertyData.city}, ${userPropertyData.state}`
 					},
-					unit_amount: amount * 100
+					unit_amount: amount * 100,
 				},
 				// For metered billing, do not pass quantity
 				quantity: 1
@@ -68,10 +68,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 					currency: 'usd',
 					product_data: {
 						name: 'Transaction Fee',
-						description: `Transaction fee for one-time payment. Set up auto-pay to waive this fee.`,
-						metadata: {
-							propertyID: userProperty.id
-						}
+						description: `Transaction fee for one-time payment. Set up auto-pay to waive this fee.`
 					},
 					unit_amount: Math.round(amount * 100 * 0.029 + 30)
 				},
@@ -80,11 +77,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			}
 		],
 		mode: 'payment',
-		metadata: {
-			propertyID: userProperty.id
-		},
 		invoice_creation: {
-			enabled: true
+			enabled: true,
+			invoice_data: {
+				metadata: {
+					propertyID: userProperty.id
+				}
+			}
 		},
 		// TODO: please change these later
 		success_url: `https://lehmanfamilyrealty.com/`,
