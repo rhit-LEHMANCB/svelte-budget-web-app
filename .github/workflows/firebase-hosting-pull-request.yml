@@ -22,6 +22,7 @@ jobs:
       SENDGRID_API_KEY: '${{ secrets.SENDGRID_API_KEY }}'
       STRIPE_API_KEY: '${{ secrets.STRIPE_API_KEY }}'
       STRIPE_ENDPOINT_SECRET: '${{ secrets.STRIPE_ENDPOINT_SECRET }}'
+      FRONTEND_URL: '${{ vars.FRONTEND_URL }}'
     steps:
       - uses: actions/checkout@v3
       - name: Install dependencies
