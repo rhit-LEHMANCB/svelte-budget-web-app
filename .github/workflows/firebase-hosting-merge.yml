@@ -35,3 +35,5 @@ jobs:
           PUBLIC_FB_APP_ID: '${{ secrets.FB_APP_ID }}'
           PUBLIC_FB_MEASUREMENT_ID: '${{ secrets.FB_MEASUREMENT_ID }}'
           SENDGRID_API_KEY: '${{ secrets.SENDGRID_API_KEY }}'
+          STRIPE_API_KEY: '${{ secrets.STRIPE_API_KEY }}'
+          STRIPE_ENDPOINT_SECRET: '${{ secrets.STRIPE_ENDPOINT_SECRET }}'
