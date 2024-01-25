@@ -37,4 +37,4 @@ jobs:
           SENDGRID_API_KEY: '${{ secrets.SENDGRID_API_KEY }}'
           STRIPE_API_KEY: '${{ secrets.STRIPE_API_KEY }}'
           STRIPE_ENDPOINT_SECRET: '${{ secrets.STRIPE_ENDPOINT_SECRET }}'
-          FRONTEND_URL: '${{ vars.FRONTEND_URL }}'
+          PUBLIC_FRONTEND_URL: '${{ vars.FRONTEND_URL }}'

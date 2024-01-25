@@ -2,7 +2,7 @@ import { stripe } from '$lib/server/stripe';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { adminDB } from '$lib/server/admin';
-import { FRONTEND_URL } from '$env/static/private';
+import { PUBLIC_FRONTEND_URL } from '$env/static/public';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
 	if (!locals.userID) {
@@ -87,8 +87,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			}
 		},
 		// TODO: please change these later
-		success_url: FRONTEND_URL,
-		cancel_url: `${FRONTEND_URL}/payment`
+		success_url: PUBLIC_FRONTEND_URL,
+		cancel_url: `${PUBLIC_FRONTEND_URL}/payment`
 	});
 
 	if (session.url) {
