@@ -2,6 +2,7 @@ import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { adminDB } from '$lib/server/admin';
 import { stripe } from '$lib/server/stripe';
+import { FRONTEND_URL } from '$env/static/private';
 
 export const GET: RequestHandler = async ({ locals }) => {
 	if (!locals.userID) {
@@ -16,7 +17,7 @@ export const GET: RequestHandler = async ({ locals }) => {
 
 	const session = await stripe.billingPortal.sessions.create({
 		customer: userData.stripeID,
-		return_url: `https://lehmanfamilyrealty.com/payment`
+		return_url: `${FRONTEND_URL}/payment`
 	});
 
 	if (session.url) {
