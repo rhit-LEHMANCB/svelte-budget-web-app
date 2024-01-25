@@ -117,7 +117,7 @@ export const actions = {
 				blobSteam.end(new Uint8Array(await file.arrayBuffer()));
 				return {
 					id: fileName,
-					photoUrl: `https://firebasestorage.googleapis.com/v0/b/lehman-realty.appspot.com/o/properties%2F${params.propertyId}%2Fimages%2F${fileName}?alt=media`
+					photoUrl: `https://firebasestorage.googleapis.com/v0/b/${PUBLIC_FB_STORAGE_BUCKET}/o/properties%2F${params.propertyId}%2Fimages%2F${fileName}?alt=media`
 				};
 			})
 		).then(async (files) => {
