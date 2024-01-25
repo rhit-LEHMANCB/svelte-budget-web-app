@@ -7,6 +7,8 @@ jobs:
   build_and_preview:
     if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
     runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref_name }}
     steps:
       - uses: actions/checkout@v3
       - name: Install dependencies
@@ -28,3 +30,5 @@ jobs:
       PUBLIC_FB_APP_ID: '${{ secrets.FB_APP_ID }}'
       PUBLIC_FB_MEASUREMENT_ID: '${{ secrets.FB_MEASUREMENT_ID }}'
       SENDGRID_API_KEY: '${{ secrets.SENDGRID_API_KEY }}'
+      STRIPE_API_KEY: '${{ secrets.STRIPE_API_KEY }}'
+      STRIPE_ENDPOINT_SECRET: '${{ secrets.STRIPE_ENDPOINT_SECRET }}'

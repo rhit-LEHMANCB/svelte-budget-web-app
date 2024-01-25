@@ -31,7 +31,7 @@ export const actions = {
 		}
 
 		const userDoc = adminDB.collection('users').doc(event.locals.userID);
-		
+
 		await userDoc.update(form.data);
 
 		const userData = (await userDoc.get()).data();
@@ -40,11 +40,13 @@ export const actions = {
 			throw error(500, 'Error retrieving user details to update');
 		}
 
-		await stripe.customers.update(userData.stripeID, {
-			name: `${form.data.firstName} ${form.data.lastName}`,
-			email: form.data.email,
-			phone: form.data.phoneNumber
-		})
+		if (userData.stripeID) {
+			await stripe.customers.update(userData.stripeID, {
+				name: `${form.data.firstName} ${form.data.lastName}`,
+				email: form.data.email,
+				phone: form.data.phoneNumber
+			});
+		}
 
 		await adminAuth.updateUser(event.locals.userID, {
 			email: form.data.email
@@ -75,7 +77,7 @@ export const actions = {
 			.collection('users')
 			.doc(locals.userID)
 			.update({
-				photoUrl: `https://firebasestorage.googleapis.com/v0/b/lehman-realty.appspot.com/o/users%2F${locals.userID}%2Fprofile%2F${fileName}?alt=media`
+				photoUrl: `https://firebasestorage.googleapis.com/v0/b/${PUBLIC_FB_STORAGE_BUCKET}/o/users%2F${locals.userID}%2Fprofile%2F${fileName}?alt=media`
 			});
 	}
 };
