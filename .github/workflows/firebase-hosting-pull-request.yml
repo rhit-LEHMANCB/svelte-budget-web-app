@@ -24,8 +24,6 @@ jobs:
       STRIPE_ENDPOINT_SECRET: '${{ secrets.STRIPE_ENDPOINT_SECRET }}'
     steps:
       - uses: actions/checkout@v3
-      - name: Print Environment Variables
-        run: 'echo "PUBLIC_FB_PROJECT_ID: $PUBLIC_FB_PROJECT_ID"'
       - name: Install dependencies
         run: npm install
       - name: Linter
