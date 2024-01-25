@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { goto, invalidateAll } from '$app/navigation';
-	import { successToast, errorToast } from '$lib/Hooks/toasts';
+	import { goto } from '$app/navigation';
+	import { errorToast } from '$lib/Hooks/toasts';
 	import { getModalStore, getToastStore, type ModalSettings } from '@skeletonlabs/skeleton';
 	import { ZodError, z } from 'zod';
 
@@ -56,7 +56,7 @@
 		title: 'Enter Payment Amount',
 		body: 'Provide the amount you would like to pay.<br />Note: One-time payments are subject to a transaction fee. Please set up auto-pay to waive this fee.',
 		// Populates the input value and attributes
-		valueAttr: { type: 'number', required: true, step: "0.01" },
+		valueAttr: { type: 'number', required: true, step: '0.01' },
 		// Returns the updated response value
 		response: startCheckout
 	};
@@ -100,7 +100,11 @@
 		<div class="card">
 			<div class="h-auto m-5">
 				<strong class="h3">Transaction History</strong>
-				<div><button class="btn variant-filled-secondary mt-5" on:click={startCustomerPortal}>View Portal</button></div>
+				<div>
+					<button class="btn variant-filled-secondary mt-5" on:click={startCustomerPortal}
+						>View Portal</button
+					>
+				</div>
 			</div>
 		</div>
 	</div>
