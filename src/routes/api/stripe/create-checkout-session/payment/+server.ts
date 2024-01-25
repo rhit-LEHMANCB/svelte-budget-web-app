@@ -1,5 +1,5 @@
 import { stripe } from '$lib/server/stripe';
-import { error, json, redirect } from '@sveltejs/kit';
+import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { adminDB } from '$lib/server/admin';
 
@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	const { amount } = await request.json();
 
 	if (!amount || typeof amount != 'number') {
-		throw error(400, 'Amount must be a provided number for the amount to charge')
+		throw error(400, 'Amount must be a provided number for the amount to charge');
 	}
 
 	const userJunctionsQuery = await adminDB
@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 						name: 'Rent',
 						description: `Rent payment for ${userPropertyData.streetAddress}, ${userPropertyData.city}, ${userPropertyData.state}`
 					},
-					unit_amount: amount * 100,
+					unit_amount: amount * 100
 				},
 				// For metered billing, do not pass quantity
 				quantity: 1
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	});
 
 	if (session.url) {
-		return json({url: session.url});
+		return json({ url: session.url });
 	} else {
 		throw error(500, 'Failed to create checkout session');
 	}

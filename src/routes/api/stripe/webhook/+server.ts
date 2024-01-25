@@ -21,6 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			sig,
 			STRIPE_ENDPOINT_SECRET
 		);
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} catch (err: any) {
 		console.log(err.message);
 		throw error(400, `Webhook Error: ${err.message}`);
@@ -28,7 +29,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	// Handle the event
 	switch (event.type) {
-		case 'invoice.payment_succeeded':
+		case 'invoice.payment_succeeded': {
 			const invoicePaymentSucceeded = event.data.object;
 			if (!invoicePaymentSucceeded.metadata) {
 				console.log('No metadata provided');
@@ -99,9 +100,11 @@ export const POST: RequestHandler = async ({ request }) => {
 					});
 			}
 			break;
+		}
 		// ... handle other event types
-		default:
+		default: {
 			console.log(`Unhandled event type ${event.type}`);
+		}
 	}
 
 	// Return a 200 response to acknowledge receipt of the event

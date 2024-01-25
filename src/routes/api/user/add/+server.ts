@@ -24,8 +24,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 	const stripeCustomer = await stripe.customers.create({
 		name: 'New User',
-		email: email,
-	  });
+		email: email
+	});
 
 	const newUserDoc = {
 		email: email,

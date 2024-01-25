@@ -3,8 +3,8 @@ import type { RequestHandler } from './$types';
 import { adminDB } from '$lib/server/admin';
 import { stripe } from '$lib/server/stripe';
 
-export const GET: RequestHandler = async ({locals}) => {
-    if (!locals.userID) {
+export const GET: RequestHandler = async ({ locals }) => {
+	if (!locals.userID) {
 		throw error(401, 'You must be logged in to do this.');
 	}
 
@@ -20,7 +20,7 @@ export const GET: RequestHandler = async ({locals}) => {
 	});
 
 	if (session.url) {
-		return json({url: session.url});
+		return json({ url: session.url });
 	} else {
 		throw error(500, 'Failed to create checkout session');
 	}
