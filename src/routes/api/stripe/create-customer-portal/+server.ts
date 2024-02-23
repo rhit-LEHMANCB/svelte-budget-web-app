@@ -17,7 +17,7 @@ export const GET: RequestHandler = async ({ locals }) => {
 
 	const session = await stripe.billingPortal.sessions.create({
 		customer: userData.stripeID,
-		return_url: `${PUBLIC_FRONTEND_URL}/payment`
+		return_url: `${PUBLIC_FRONTEND_URL}/manager/payment`
 	});
 
 	if (session.url) {
