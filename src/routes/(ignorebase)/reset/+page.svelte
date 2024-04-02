@@ -17,12 +17,13 @@
 	import { passwordChangeSchema } from '$lib/schemas';
 	import { IconQuestionMark } from '@tabler/icons-svelte';
 	import { PUBLIC_FRONTEND_URL } from '$env/static/public';
+	import { zodClient } from 'sveltekit-superforms/adapters';
 
 	export let data: PageData;
 
-	const { form, errors, validate, enhance } = superForm(data.form, {
+	const { form, errors, validateForm, enhance } = superForm(data.form, {
 		customValidity: true,
-		validators: passwordChangeSchema,
+		validators: zodClient(passwordChangeSchema),
 		validationMethod: 'onblur'
 	});
 
@@ -52,7 +53,7 @@
 			throw error(400, 'Invalid action');
 		}
 
-		const result = await validate();
+		const result = await validateForm();
 
 		if (!result.valid) {
 			return;

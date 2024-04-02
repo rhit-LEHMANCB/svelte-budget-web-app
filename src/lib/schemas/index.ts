@@ -108,3 +108,25 @@ export const insuranceSchema = z
 		message: 'End date must be after start date',
 		path: ['endDate']
 	});
+
+export const leaseSchema = z
+	.object({
+		lease: z.instanceof(File, { message: 'Please upload a file.' }),
+		rent: z
+			.number({ invalid_type_error: 'Rent must be a number' })
+			.positive('Rent must be greater than 0'),
+		users: z.array(z.string()).min(1),
+		startDate: z.date({
+			required_error: 'Please select a date',
+			invalid_type_error: 'Please enter a date in the correct format'
+		}),
+		endDate: z.coerce.date({
+			required_error: 'Please select a date',
+			invalid_type_error: 'Please enter a date in the correct format'
+		})
+	})
+	.refine((schema) => schema.startDate < schema.endDate, {
+		message: 'End date must be after start date',
+		path: ['endDate']
+	});
+export type LeaseSchema = typeof leaseSchema;

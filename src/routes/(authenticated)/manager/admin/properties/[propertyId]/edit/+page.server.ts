@@ -6,6 +6,7 @@ import { error, fail } from '@sveltejs/kit';
 import { PUBLIC_FB_STORAGE_BUCKET } from '$env/static/public';
 import { FieldPath, FieldValue } from 'firebase-admin/firestore';
 import type { DocumentWithId, PhotoItem } from '../../../../../../../app';
+import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = (async (event) => {
 	if (!event.locals.userID) {
@@ -59,7 +60,7 @@ export const load = (async (event) => {
 		return tenant.data;
 	}) as DocumentWithId[];
 
-	const form = await superValidate(propertyData, propertySchema);
+	const form = await superValidate(propertyData, zod(propertySchema));
 	const photos: PhotoItem[] = propertyData.photos ?? [];
 	return {
 		form,
@@ -71,7 +72,7 @@ export const load = (async (event) => {
 
 export const actions = {
 	basicInfo: async (event) => {
-		const form = await superValidate(event, propertySchema);
+		const form = await superValidate(event, zod(propertySchema));
 
 		if (!event.locals.userID) {
 			throw error(401, 'You must be logged in to do this.');

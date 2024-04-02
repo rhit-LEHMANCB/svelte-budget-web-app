@@ -5,13 +5,14 @@
 	import { successToast } from '$lib/Hooks/toasts';
 	import { Accordion, AccordionItem, getToastStore } from '@skeletonlabs/skeleton';
 	import { IconTool } from '@tabler/icons-svelte';
+	import { zodClient } from 'sveltekit-superforms/adapters';
 
 	export let data: PageData;
 	const toastStore = getToastStore();
 
 	const { form, errors, enhance } = superForm(data.form, {
 		customValidity: true,
-		validators: maintenanceSchema,
+		validators: zodClient(maintenanceSchema),
 		resetForm: true,
 		onUpdated({ form }) {
 			if (form.message === 'Form submitted') {

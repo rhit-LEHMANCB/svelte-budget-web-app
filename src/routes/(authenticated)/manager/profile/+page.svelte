@@ -8,6 +8,7 @@
 	import { enhance } from '$app/forms';
 	import { MaskedTextChangedListener } from 'ts-input-mask';
 	import { onMount } from 'svelte';
+	import { zodClient } from 'sveltekit-superforms/adapters';
 
 	const toastStore = getToastStore();
 
@@ -24,7 +25,7 @@
 		enhance: enhanceContact
 	} = superForm(data.form, {
 		customValidity: true,
-		validators: profileSchema,
+		validators: zodClient(profileSchema),
 		onUpdated({ form }) {
 			if (form.message === 'Form submitted') {
 				// Display the message using a toast library

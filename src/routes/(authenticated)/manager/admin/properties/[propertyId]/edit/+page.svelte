@@ -5,7 +5,7 @@
 	import SortablePhotos from '$lib/Components/SortablePhotos.svelte';
 	import { errorToast, successToast } from '$lib/Hooks/toasts';
 	import { page } from '$app/stores';
-	import { goto, invalidateAll } from '$app/navigation';
+	import { invalidateAll } from '$app/navigation';
 	import {
 		Autocomplete,
 		popup,
@@ -22,7 +22,8 @@
 		IconInfoCircle,
 		IconPhoto,
 		IconUserDollar,
-		IconLinkMinus
+		IconLinkMinus,
+		IconFileText
 	} from '@tabler/icons-svelte';
 	import type { DocumentWithId, PhotoItem } from '../../../../../../../app';
 	import UsersListView from '$lib/Components/Users/UsersListView.svelte';
@@ -53,7 +54,7 @@
 		}
 	}
 
-	async function deleteLink(item: PhotoItem) {
+	async function deletePhoto(item: PhotoItem) {
 		const response = await fetch(`/api/property/${$page.params.propertyId}/photos`, {
 			method: 'DELETE',
 			headers: {
@@ -146,9 +147,8 @@
 </script>
 
 <div class="flex flex-row justify-between py-5">
-	<button
-		on:click={() => goto('/manager/admin/properties')}
-		class="btn btn-sm variant-filled-primary ml-5"><IconArrowLeft class="mr-2" />Properties</button
+	<a href="/manager/admin/properties" class="btn btn-sm variant-filled-primary ml-5"
+		><IconArrowLeft class="mr-2" />Properties</a
 	>
 	<strong class="h3 mx-5 truncate">{data.form.data.title}</strong>
 </div>
@@ -170,6 +170,12 @@
 		><div class="flex gap-2">
 			<IconUserDollar />
 			<span>Tenants</span>
+		</div></Tab
+	>
+	<Tab bind:group={tabSet} name="leases" value={3}
+		><div class="flex gap-2">
+			<IconFileText />
+			<span>Leases</span>
 		</div></Tab
 	>
 	<!-- Tab Panels --->
@@ -203,7 +209,7 @@
 							<img src={item.photoUrl} alt={item.id} on:error={(ev) => handleError(ev, item)} />
 						</div>
 						<button
-							on:click={() => deleteLink(item)}
+							on:click={() => deletePhoto(item)}
 							class="chip variant-filled-error invisible group-hover:visible transition-all absolute -right-2 -bottom-4"
 							>Delete</button
 						>
@@ -252,6 +258,13 @@
 				{:else}
 					<div>No tenants</div>
 				{/if}
+			</div>
+		{:else if tabSet === 3}
+			<div>
+				<a
+					href={`/manager/admin/properties/${$page.params.propertyId}/addlease`}
+					class="btn variant-filled-primary">Add Lease</a
+				>
 			</div>
 		{/if}
 	</svelte:fragment>

@@ -4,6 +4,7 @@ import { message, superValidate } from 'sveltekit-superforms/server';
 import { insuranceSchema } from '$lib/schemas';
 import { adminDB } from '$lib/server/admin';
 import { formatDate } from '$lib/DatePicker/date-utils';
+import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = (async (event) => {
 	if (!event.locals.userID) {
@@ -27,7 +28,7 @@ export const load = (async (event) => {
 		insuranceData = undefined;
 	}
 
-	const form = await superValidate(insuranceData, insuranceSchema);
+	const form = await superValidate(insuranceData, zod(insuranceSchema));
 
 	return {
 		form
@@ -36,7 +37,7 @@ export const load = (async (event) => {
 
 export const actions = {
 	default: async (event) => {
-		const form = await superValidate(event, insuranceSchema);
+		const form = await superValidate(event, zod(insuranceSchema));
 
 		if (!event.locals.userID) {
 			throw error(401, 'You must be logged in to do this.');

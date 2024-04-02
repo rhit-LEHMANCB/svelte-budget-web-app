@@ -5,6 +5,7 @@ import { error, fail } from '@sveltejs/kit';
 import { profileSchema } from '$lib/schemas';
 import { PUBLIC_FB_STORAGE_BUCKET } from '$env/static/public';
 import { stripe } from '$lib/server/stripe';
+import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = (async (event) => {
 	if (!event.locals.userID) {
@@ -12,7 +13,7 @@ export const load = (async (event) => {
 	}
 	const userData = (await adminDB.collection('users').doc(event.locals.userID).get()).data();
 
-	const form = await superValidate(userData, profileSchema);
+	const form = await superValidate(userData, zod(profileSchema));
 	return {
 		form
 	};
@@ -20,7 +21,7 @@ export const load = (async (event) => {
 
 export const actions = {
 	contact: async (event) => {
-		const form = await superValidate(event, profileSchema);
+		const form = await superValidate(event, zod(profileSchema));
 
 		if (!event.locals.userID) {
 			throw error(401, 'You must be logged in to do this.');

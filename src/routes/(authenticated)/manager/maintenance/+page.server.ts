@@ -5,6 +5,7 @@ import { maintenanceSchema } from '$lib/schemas';
 import { adminDB } from '$lib/server/admin';
 import { FieldValue, Timestamp } from 'firebase-admin/firestore';
 import type { MaintenanceRequest } from '../../../../app';
+import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = (async (event) => {
 	if (!event.locals.userID) {
@@ -55,7 +56,7 @@ export const load = (async (event) => {
 		} as MaintenanceRequest;
 	});
 
-	const form = await superValidate(maintenanceSchema);
+	const form = await superValidate(zod(maintenanceSchema));
 	return {
 		form,
 		openMaintenanceRequests,
@@ -65,7 +66,7 @@ export const load = (async (event) => {
 
 export const actions = {
 	default: async (event) => {
-		const form = await superValidate(event, maintenanceSchema);
+		const form = await superValidate(event, zod(maintenanceSchema));
 
 		if (!event.locals.userID) {
 			throw error(401, 'You must be logged in to do this.');

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { superForm } from 'sveltekit-superforms/client';
+	import { zodClient } from 'sveltekit-superforms/adapters';
 	import type { PageData } from './$types';
 	import { insuranceSchema } from '$lib/schemas';
 	import { successToast } from '$lib/Hooks/toasts';
@@ -11,7 +12,7 @@
 
 	const { form, errors, enhance } = superForm(data.form, {
 		customValidity: true,
-		validators: insuranceSchema,
+		validators: zodClient(insuranceSchema),
 		onUpdated({ form }) {
 			if (form.message === 'Form submitted') {
 				// Display the message using a toast library

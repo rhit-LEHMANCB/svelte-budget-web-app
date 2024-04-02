@@ -1,8 +1,11 @@
 import type { PageServerLoad } from './$types';
 import { message, superValidate } from 'sveltekit-superforms/server';
-import { adminDB } from '$lib/server/admin';
-import { propertySchema } from '$lib/schemas';
-import { error } from '@sveltejs/kit';
+import { adminDB, adminStorage } from '$lib/server/admin';
+import { leaseSchema, propertySchema } from '$lib/schemas';
+import { error, fail } from '@sveltejs/kit';
+import { PUBLIC_FB_STORAGE_BUCKET } from '$env/static/public';
+import { FieldPath, FieldValue } from 'firebase-admin/firestore';
+import type { DocumentWithId, PhotoItem } from '../../../../../../../app';
 import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = (async (event) => {
@@ -15,15 +18,28 @@ export const load = (async (event) => {
 		throw error(401, 'You must be an admin to do this.');
 	}
 
-	const form = await superValidate(zod(propertySchema));
+	const propertyData = (
+		await adminDB.collection('properties').doc(event.params.propertyId).get()
+	).data();
+
+	if (!propertyData) {
+		throw error(500, 'Error retrieving property');
+	}
+
+	const form = await superValidate(zod(leaseSchema));
+	const usersOptions = (await adminDB.collection('users').get()).docs.map((doc) => ({
+		label: `${doc.data().firstName} ${doc.data().lastName}`,
+		value: doc.id
+	}));
 	return {
-		form
+		form,
+		usersOptions
 	};
 }) satisfies PageServerLoad;
 
 export const actions = {
-	basicInfo: async (event) => {
-		const form = await superValidate(event, zod(propertySchema));
+	lease: async (event) => {
+		const form = await superValidate(event, zod(leaseSchema));
 
 		if (!event.locals.userID) {
 			throw error(401, 'You must be logged in to do this.');
@@ -39,7 +55,6 @@ export const actions = {
 			return message(form, 'Invalid form');
 		}
 
-		const newDoc = await adminDB.collection('properties').add(form.data);
-		return message(form, `id${newDoc.id}`);
+		return message(form, 'Form submitted');
 	}
 };

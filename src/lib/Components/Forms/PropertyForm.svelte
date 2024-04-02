@@ -5,17 +5,18 @@
 	import { IconCurrencyDollar } from '@tabler/icons-svelte';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import type { SuperValidated } from 'sveltekit-superforms';
+	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import { getToastStore } from '@skeletonlabs/skeleton';
 	import { getGoogle } from '$lib/google';
+	import { zodClient } from 'sveltekit-superforms/adapters';
 
 	const toastStore = getToastStore();
 
-	export let data: SuperValidated<PropertySchema>;
+	export let data: SuperValidated<Infer<PropertySchema>>;
 
 	const { form, errors, enhance } = superForm(data, {
 		customValidity: true,
-		validators: propertySchema,
+		validators: zodClient(propertySchema),
 		onUpdated({ form }) {
 			if (form.message === 'Form submitted') {
 				// Display the message using a toast library
